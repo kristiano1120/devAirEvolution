@@ -1,0 +1,27 @@
+/* Contact rec = new Contact(Tipo_de_Identificaci_n__c	 = 'Cedula de Extranjería', Numero_de_Identificacion__c =  '1830690248');
+Contact recEfectivo = new Contact(Tipo_de_Identificaci_n__c	 = 'Cedula de Extranjería', Numero_de_Identificacion__c =  '1830690248');
+Contact noRec = new Contact(lastName = 'Londono',Tipo_de_Identificaci_n__c = 'Cedula de Ciudadanía', Numero_de_Identificacion__c = '5451946');
+
+
+Descuento.aplicarDescuento(rec, Descuento.metodo.TC, 25000);
+Descuento.aplicarDescuento(recEfectivo, Descuento.metodo.EFECTIVO, 25000);
+Descuento.aplicarDescuento(noRec, Descuento.metodo.TC, 25000); 
+
+INSERTAR AEROPUERTOS
+List<Product2> lista = new List<Product2>();
+List<Aeropuerto__c> aeropuertos = [SELECT id FROM Aeropuerto__c LIMIT 51];
+List<Avion__c> aviones = [SELECT id FROM Avion__c WHERE Solo_Carga__c = FALSE];
+for(integer i = 0; i < 50; i++){
+    Product2 vuelo = new Product2(Name = 'ALGO',
+                                 Avion__c = aviones[i/5].id,
+                                 Fecha_y_hora_de_partida__c = datetime.now()+i,
+                                 Fecha_y_hora_estimada_de_llegada__c = (datetime.now()+i+1).addHours(1),
+                                 Aeropuerto_de_Partida__c = aeropuertos[i].id,
+                                 Aeropuerto_de_Llegada__c = aeropuertos[i+1].id,
+                                 IsActive = true,
+                                 Estado__c = 'En venta');
+    lista.add(vuelo);    
+}
+insert lista;
+
+ */

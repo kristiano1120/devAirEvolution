@@ -1,0 +1,87 @@
+<template>
+    <div class="search-form">
+        <div class="slds-p-around_medium lgc-bg">
+            <lightning-combobox
+            name="buscar"
+            label="Tipo de Documento"
+            value={tipo}
+            placeholder="Seleccione"
+            options={options}
+            onchange={handleChange} required></lightning-combobox>
+            <lightning-input type="text" label= "Número de documento del cliente" placeholder="Documento" onchange={eventChange} class="documento" required></lightning-input>
+        </div>
+        <div class="slds-align_absolute-center">
+            <lightning-button variant="brand" label="Buscar" title="Primary action" onclick={handleBuscar} class="slds-m-left_x-small"></lightning-button>
+        </div>
+    </div>
+    <template if:true={modalExisteOpen}>    
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModalE}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Nueva Reserva</h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <table class="table_row_action">
+                        <tr>
+                            <td><b>Nombre:</b> </td><td>{nombre}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Tipo de Identificacion:</b> </td><td>{numId}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Numeros de Identificacion:</b> </td><td>{tipoId}</td>
+                        </tr>                        
+                    </table>                                                    
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModalE} title="Cancel">Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">OK</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+
+    <template if:true={modalNoExisteOpen}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModalNe}>
+                        <lightning-icon icon-name="utility:close"
+                            alternative-text="close"
+                            variant="inverse"
+                            size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Crear contacto</h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                    <lightning-card>
+                        <c-nuevo-contacto tipo-id={tipo} doc={doc} ></c-nuevo-contacto>
+                    </lightning-card>                                          
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModalNe} title="Cancel">Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">OK</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

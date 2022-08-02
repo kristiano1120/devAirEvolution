@@ -1,0 +1,7 @@
+.table_row_action, td, tr{
+    padding: 2px 5px;
+    margin: auto;
+    width: 55%;    
+    border: 1px solid;
+    border-color: rgb(179, 176, 176);
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Solo_Carga</fullName>
+    <columns>NAME</columns>
+    <columns>Viajes_Internacionales__c</columns>
+    <columns>Viajes_Nacionales__c</columns>
+    <columns>Tipo__c</columns>
+    <filterScope>Mine</filterScope>
+    <filters>
+        <field>Solo_Carga__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>Solo Carga</label>
+</ListView>

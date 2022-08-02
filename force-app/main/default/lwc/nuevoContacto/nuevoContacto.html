@@ -1,0 +1,21 @@
+<template>    
+    <lightning-card icon-name="contact:standard">
+        <lightning-record-edit-form object-api-name="Contact" onsuccess={handleSuccess}>
+            <lightning-input-field field-name="Tipo_de_Identificaci_n__c" value={tipoId}>
+            </lightning-input-field>
+            <lightning-input-field field-name="Numero_de_Identificacion__c" value={doc}>
+            </lightning-input-field>
+            <lightning-input-field field-name="Name" >
+            </lightning-input-field>
+            <lightning-input-field field-name="Email">
+            </lightning-input-field>
+            
+            <lightning-button
+                class="slds-m-top_small"
+                type="submit"
+                label="Create new"
+                >
+            </lightning-button>
+        </lightning-record-edit-form>
+    </lightning-card>    
+</template>

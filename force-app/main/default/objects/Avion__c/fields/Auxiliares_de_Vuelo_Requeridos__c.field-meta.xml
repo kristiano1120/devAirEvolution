@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Auxiliares_de_Vuelo_Requeridos__c</fullName>
+    <description>Calcula la cantidad de auxiliares de vuelo que requiere un avión según su capacidad de pasajeros.</description>
+    <externalId>false</externalId>
+    <formula>IF((Numero_de_pasajeros_negocios__c  +  Numero_de_pasajeros_Clase_Turista__c)  &lt;= 25,1, 
+ IF((Numero_de_pasajeros_negocios__c  +  Numero_de_pasajeros_Clase_Turista__c)  &lt;= 50,2,
+  IF((Numero_de_pasajeros_negocios__c  +  Numero_de_pasajeros_Clase_Turista__c)  &lt;= 75,3,
+   IF((Numero_de_pasajeros_negocios__c  +  Numero_de_pasajeros_Clase_Turista__c)  &lt;= 100,4,
+    IF((Numero_de_pasajeros_negocios__c  +  Numero_de_pasajeros_Clase_Turista__c)  &lt;= 125,5,
+     IF((Numero_de_pasajeros_negocios__c  +  Numero_de_pasajeros_Clase_Turista__c)  &lt;= 150,6,
+      IF((Numero_de_pasajeros_negocios__c  +  Numero_de_pasajeros_Clase_Turista__c)  &lt;= 175,7,
+       IF((Numero_de_pasajeros_negocios__c  +  Numero_de_pasajeros_Clase_Turista__c)  &lt;= 200,8,
+        IF((Numero_de_pasajeros_negocios__c  +  Numero_de_pasajeros_Clase_Turista__c)  &lt;= 225,9,
+         IF((Numero_de_pasajeros_negocios__c  +  Numero_de_pasajeros_Clase_Turista__c)  &lt;= 250,10,
+          IF((Numero_de_pasajeros_negocios__c  +  Numero_de_pasajeros_Clase_Turista__c)  &lt;= 275,11,12 
+             )))))))))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Auxiliares de Vuelo Requeridos</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

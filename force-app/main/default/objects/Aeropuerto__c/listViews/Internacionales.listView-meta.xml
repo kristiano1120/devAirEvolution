@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Internacionales</fullName>
+    <columns>Codigo_IATA__c</columns>
+    <columns>NAME</columns>
+    <columns>Pais__c</columns>
+    <columns>Ciudad__c</columns>
+    <columns>Recibe_vuelos_internacionales__c</columns>
+    <columns>Recibe_vuelos_nacionales__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Pais__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <label>Internacionales</label>
+</ListView>

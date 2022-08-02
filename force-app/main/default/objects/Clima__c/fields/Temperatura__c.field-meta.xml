@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Temperatura__c</fullName>
+    <description>Numero de grados registrados en un momento exacto</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Solo ingresar numeros enteros sin unidad de medida</inlineHelpText>
+    <label>Temperatura</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>
