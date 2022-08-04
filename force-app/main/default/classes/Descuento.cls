@@ -8,34 +8,34 @@ public with sharing class Descuento {
                                 WHERE Tipo_de_Identificaci_n__c =: cliente.Tipo_de_Identificaci_n__c 
                                 AND Numero_de_Identificacion__c =: cliente.Numero_de_Identificacion__c
                                 LIMIT 1];
-        if(recurrente.size() > 0){
-            switch on metodoPago {
-                when TC {
-                    respuesta.valorConDcto = valor * 0.8;
-                    respuesta.resultado = true;
-                    respuesta.mensaje = 'Se aplicó el descuento de cliente recurrente con '+metodoPago+' de 20%';
-                    System.debug(respuesta.mensaje);
-                }
-                when EFECTIVO {
-                    respuesta.valorConDcto = valor * 0.7;
-                    respuesta.resultado = true;
-                    respuesta.mensaje = 'Se aplicó el descuento de cliente recurrente con '+metodoPago+' de 30%';
-                    System.debug(respuesta.mensaje);
+            if(recurrente.size() > 0){
+                switch on metodoPago {
+                    when TC {
+                        respuesta.valorConDcto = valor * 0.8;
+                        respuesta.resultado = true;
+                        respuesta.mensaje = 'Se aplicó el descuento de cliente recurrente con '+metodoPago+' de 20%';
+                        System.debug(respuesta.mensaje);
+                    }
+                    when EFECTIVO {
+                        respuesta.valorConDcto = valor * 0.7;
+                        respuesta.resultado = true;
+                        respuesta.mensaje = 'Se aplicó el descuento de cliente recurrente con '+metodoPago+' de 30%';
+                        System.debug(respuesta.mensaje);
 
+                    }
+                    when else {
+                        throw new descuentoException();
+                    }
                 }
-                when else {
-                    throw new descuentoException();
-                }
+            } else {
+                respuesta.valorConDcto = valor * 0.85;
+                respuesta.resultado = true;
+                respuesta.mensaje = 'Se aplicó el descuento de cliente nuevo con '+metodoPago+' de 15%';
+                System.debug(respuesta.mensaje);
+
+        
+                insert cliente;
             }
-        } else {
-            respuesta.valorConDcto = valor * 0.85;
-            respuesta.resultado = true;
-            respuesta.mensaje = 'Se aplicó el descuento de cliente nuevo con '+metodoPago+' de 15%';
-            System.debug(respuesta.mensaje);
-
-    
-            insert cliente;
-        }
         }catch(QueryException qe){
             System.debug('Ocurrio un error en la consulta: '+qe.getMessage());
             throw new descuentoException('Ocurrio un error en la consulta',qe);

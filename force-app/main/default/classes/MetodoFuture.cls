@@ -9,7 +9,7 @@ public class MetodoFuture {
         Account acct = new Account(id = accId,
                                 	SLASerialNumber__c = guid);      
        
-        Update acct;
+        Update acct;        
     }
     
 }

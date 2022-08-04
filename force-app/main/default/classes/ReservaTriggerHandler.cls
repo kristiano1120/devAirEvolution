@@ -9,13 +9,13 @@ public with sharing class ReservaTriggerHandler implements TriggerHandler {
     public void beforeInsert(List<Opportunity> newRecords) {
         // helper.doTask1();
         // helper.doTask2(); 
-        actualizarFecha(newRecords);
+        actualizarFechaSiPagado(newRecords);
         NombreDeReserva(newRecords);       
     }
     public void beforeUpdate(List<Opportunity> oldRecords, List<Opportunity> newRecords, Map<ID, sObject> oldRecordMap, Map<ID, sObject> newRecordMap){
         // helper.doTask3();
         // helper.doTask4();
-        actualizarFecha(newRecords);
+        actualizarFechaSiPagado(newRecords);
     }
     public void beforeDelete(List<Opportunity> oldRecords, Map<ID, sObject> oldOpportunityMap) {
         // helper.doTask5();
@@ -39,7 +39,7 @@ public with sharing class ReservaTriggerHandler implements TriggerHandler {
     }
 
     //Si una reserva es pagada, actualizar fecha de pago y enviar correo al pasajero con la inf de su reserva.
-    public static void actualizarFecha(List<Opportunity> reserva){
+    public static void actualizarFechaSiPagado(List<Opportunity> reserva){
         for (Opportunity opp : reserva){
             if (opp.StageName == 'Pagado') {
                 //Actualizar la fecha de pago
@@ -96,8 +96,8 @@ public with sharing class ReservaTriggerHandler implements TriggerHandler {
         
         for (Opportunity opp : reservas) {
             if(String.isNotEmpty(opp.Name)){
-                Integer NumeroDeReserva = Integer.valueof(Math.random() * 10000000);
-                opp.Name = Titulares.get(opp.Titular_de_la_reserva__c).name + NumeroDeReserva;
+                String NumeroDeReserva = EncodingUtil.ConvertTohex(Crypto.GenerateAESKey(128)).substring(0,6);
+                opp.Name = Titulares.get(opp.Titular_de_la_reserva__c).name + '-' + NumeroDeReserva;
                 System.debug('nombre de reserva: '+ opp.Name);
             }
         }

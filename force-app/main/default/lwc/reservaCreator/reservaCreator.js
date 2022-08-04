@@ -7,6 +7,8 @@ import TITULARDERESERVA_FIELD from '@salesforce/schema/Opportunity.Titular_de_la
 import ESTADO_FIELD from '@salesforce/schema/Opportunity.StageName';
 import NOMBREDERESERVA_FIELD from '@salesforce/schema/Opportunity.Name';
 import FECHADECIERRE_FIELD from '@salesforce/schema/Opportunity.CloseDate';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
 
 export default class ReservaCreator extends LightningElement {
     @api recordId;
@@ -21,8 +23,11 @@ export default class ReservaCreator extends LightningElement {
     get contactName(){
         return this.record.data ? getFieldValue(this.record.data, NAME_FIELD) : '';
     }
+    
 
     createOpportunity(){
+        this.dispatchEvent(new CustomEvent('cerrar'));
+        
         const fields = {}
         fields[TITULARDERESERVA_FIELD.fieldApiName] = this.recordId;
         fields[NOMBREDERESERVA_FIELD.fieldApiName] = this.contactName;
@@ -32,13 +37,19 @@ export default class ReservaCreator extends LightningElement {
         const recordInput ={apiName: OPPORTUNITY_OBJECT.objectApiName, fields };
         console.log(recordInput);
         createRecord(recordInput)
+
+        
         .then(opportunity => {
+            
             this.opportunityId = opportunity.id;
             console.log(fields);
             console.log('Reserva creada con éxito');
+            this.dispatchEvent(new CustomEvent('mensaje'));
+            
         })
         .catch(error => {
             console.error(error);
         })
+        
     }
 }
