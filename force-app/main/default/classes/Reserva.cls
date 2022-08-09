@@ -44,36 +44,15 @@ public with sharing class Reserva {
 
     @AuraEnabled(cacheable = true)
     public static List<vueloWrapper> obtenerVuelos(){
-       List<Product2> vuelos = [SELECT Id, Name, Aeropuerto_de_Partida__c, Aeropuerto_de_Llegada__c, 
+       List<Product2> vuelos = [SELECT Id, Name, Aeropuerto_de_Partida__r.Name, Aeropuerto_de_Llegada__r.Name, 
                                 Fecha_y_hora_de_partida__c, Fecha_y_hora_estimada_de_llegada__c 
                                 FROM Product2
                                 WHERE Fecha_y_hora_de_partida__c > today];
         List<vueloWrapper> lista = new List<vueloWrapper>();
         for (Product2 v : vuelos) {
-            lista.add(new vueloWrapper((String)v.Id, v.name, v.Aeropuerto_de_Partida__r.Name, v.Aeropuerto_de_Partida__r.Name, (Date)v.Fecha_y_hora_de_partida__c, (Date)v.Fecha_y_hora_estimada_de_llegada__c));
+            lista.add(new vueloWrapper((String)v.Id, v.name, v.Aeropuerto_de_Partida__r.Name, v.Aeropuerto_de_Partida__r.Name, v.Fecha_y_hora_de_partida__c, v.Fecha_y_hora_estimada_de_llegada__c));
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
         return lista;
     }
 
@@ -87,11 +66,11 @@ public with sharing class Reserva {
         @AuraEnabled
         public String aeroLlegada;
         @AuraEnabled
-        public Date fechaPartida;
+        public Datetime fechaPartida;
         @AuraEnabled
-        public Date fechaLlegada;
+        public Datetime fechaLlegada;
 
-        public vueloWrapper(String id, String nombre, String apartida, String allegada, Date fPartida, Date fllegada) {
+        public vueloWrapper(String id, String nombre, String apartida, String allegada, Datetime fPartida, Datetime fllegada) {
             idVuelo = id;
             nombreVuelo = nombre;
             aeroPartida = apartida;
@@ -99,6 +78,12 @@ public with sharing class Reserva {
             fechaPartida = fPartida;
             fechaLlegada = fllegada;
         }    
+    }
+
+    @AuraEnabled(cacheable = true)
+    public static List<Pricebook2> obtenerListaPrecios(String nombre){
+        List<Pricebook2> idPrecios = [SELECT Id FROM Pricebook2 WHERE Name = :nombre LIMIT 1];
+        return idPrecios;
     }
     
 }

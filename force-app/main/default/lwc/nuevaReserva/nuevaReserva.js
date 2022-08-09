@@ -21,21 +21,30 @@ const columns = [
 
 export default class NuevaReserva extends LightningElement {
     //metodo para seleccionar vuelos
-    @wire(obtenerVuelos)vuelos;    
-    columns = columns;
+    //@wire(listarVuelos)vuelos;    
+    columns = columns;   
+
 
     //Mostrar ocultar modal
     modalExisteOpen;
     modalNoExisteOpen;
+    seleccionarVueloModal
     seleccionarVuelo;
     closeModalE(){
         this.modalExisteOpen = false;
     }
+    closeModalESeleccionVuelo(){
+        this.modalExisteOpen = false;
+        this.seleccionarVueloModal = true;
+        this.seleccionarVuelo = true;
+
+    }
     closeModalNe(){
         this.modalNoExisteOpen = false;
+        
     }
     closeModalSeleccionar(){
-        this.seleccionarVuelo = false;
+        this.seleccionarVueloModal = false;
     } 
      //propiedades
     tablaContact;
@@ -46,13 +55,22 @@ export default class NuevaReserva extends LightningElement {
     contacto;
     reserva;
     mensaje;
-    error;      
+    error;  
+    lista;
+    idLista;    
     
-    get options() {
+    get optionsTipo() {
         return [
             { label: 'Cedula de Ciudadanía', value: 'Cedula de Ciudadanía' },
             { label: 'Cedula de Extranjería', value: 'Cedula de Extranjería' },
             { label: 'Tarjeta de Identidad', value: 'Tarjeta de Identidad' },
+        ];
+    }
+    get optionsLista() {
+        return [
+            { label: 'Tiquetes Clase Turista', value: 'Tiquetes Clase Turista' },
+            { label: 'Tiquetes Clase Negocios', value: 'Tiquetes Clase Negocios' },
+            { label: 'Tiquetes Carga', value: 'Tiquetes Carga' },
         ];
     }
 
@@ -60,9 +78,13 @@ export default class NuevaReserva extends LightningElement {
         this.doc = event.target.value; 
             console.log(this.doc);
         }
-    handleChange(event){
+    handleChangeTipo(event){
         this.tipo = event.detail.value;
         console.log(this.tipo);
+    }
+    handleChangeLista(e){
+        this.lista = e.detail.value;
+        console.log(this.lita);
     }  
     
     showToastReserva() {
@@ -100,7 +122,6 @@ export default class NuevaReserva extends LightningElement {
                     this.tablaReserva = false;
                     this.reservaComponent = true;
                 } else {
-                    this.seleccionarVuelo = true;
                     this.tablaReserva = true;                    
                 }         
             }
@@ -113,6 +134,14 @@ export default class NuevaReserva extends LightningElement {
             }   
         });        
     }
+    handleBuscarLista(){
+        obtenerVuelos({nombre: this.lista})
+        .then((result) => {
+            this.idLista = result.idPrecios;
+        }).catch((err) => {});
+    }
+
+    
     
     //propiedades tabla
     get nombre(){
@@ -157,5 +186,21 @@ export default class NuevaReserva extends LightningElement {
             return '' 
         }
     }
+
+    //codigo para el row action
+    /* idVuelo;
+    nombreVuelo;
+    aeroPartida;
+    aeroLlegada;
+    fechaPartida;
+    fechaLlegada;
+    handleAction(event){        
+        this.idVuelo = event.detail.row.idVuelo;
+        this.nombreVuelo = event.detail.row.Name; 
+        this.aeroPartida = event.detail.row.aeroPartida; 
+        this.aeroLlegada = event.detail.row.aeroLlegada; 
+        this.fechaPartida = event.detail.row.fechaPartida; 
+        this.fechaLlegada = event.detail.row.fechaLlegada;
+    } */
     
 }

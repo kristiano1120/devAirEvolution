@@ -7,7 +7,6 @@ import TITULARDERESERVA_FIELD from '@salesforce/schema/Opportunity.Titular_de_la
 import ESTADO_FIELD from '@salesforce/schema/Opportunity.StageName';
 import NOMBREDERESERVA_FIELD from '@salesforce/schema/Opportunity.Name';
 import FECHADECIERRE_FIELD from '@salesforce/schema/Opportunity.CloseDate';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 
 export default class ReservaCreator extends LightningElement {
