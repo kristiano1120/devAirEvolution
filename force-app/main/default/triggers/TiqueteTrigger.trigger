@@ -1,7 +1,7 @@
 trigger TiqueteTrigger on OpportunityLineItem (before insert, before update, before delete, 
                             after insert, after update, after delete, after undelete) {
     
-    TriggerHanddler handler = new TiqueteTriggerHandler(trigger.isExecuting, trigger.size);
+    TriggerHandler handler = new TiqueteTriggerHandler(trigger.isExecuting, trigger.size);
 
     switch on trigger.operationType {
         when  BEFORE_INSERT{

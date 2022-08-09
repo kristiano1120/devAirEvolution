@@ -53,31 +53,29 @@
                                 <td><b>Estado de la reserva</b> </td><td>{estado}</td>
                             </tr>                        
                         </table>
-                        <p>Actuamente no se puede crear ni editar una reserva para este cliente.</p>
+                        <p>Actulamente no se puede crear ni editar una reserva para este cliente.</p>
                         <p>Debe completar la reserva mostrada en la tabla anterior.</p>
                     </template>
-                    
-                    <template if:true={seleccionarVuelo}>
-                        <div style="height: 300px; margin: 10px;">
-                            <lightning-datatable
-                                    key-field="id"
-                                    data={vuelos.data}                
-                                    columns={columns}
-                                    onrowaction={handleAction}>
-                            </lightning-datatable>
-                        </div>    
-                    </template>
-
+                    <div if:true={seleccionarLista} class="slds-p-around_medium lgc-bg">
+                        <lightning-card>
+                            <lightning-combobox
+                        name="lista"
+                        label="Lista de precios"
+                        value={lista}
+                        placeholder="Seleccione"
+                        options={optionsLista}
+                        onchange={handleChangeLista} required></lightning-combobox>
+                        </lightning-card>
+                    </div>   
                     <template if:true={reservaComponent}>
                         <lightning-card class="slds-p-around_medium">
-                            <c-reserva-creator onmensaje={showToastReserva} oncerrar={closeModalE} record-id={id}></c-reserva-creator>
+                            <c-reserva-creator onmensaje={showToastReserva} oncerrarpanel={closeModalESeleccionVuelo} record-id={id} lista-precios={idLista1}></c-reserva-creator>
                         </lightning-card>
                     </template>                                            
                 </div>
                 <!-- Modal/Popup Box LWC footer starts here -->
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={closeModalE} title="Cancel">Cancel</button>
-                    <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">OK</button>
                 </footer>
             </div>
         </section>
@@ -106,16 +104,23 @@
                         <c-nuevo-contacto oncerrarc={closeModalNe} onmensajec={showToastContacto} tipo-id={tipo} doc={doc} ></c-nuevo-contacto>
                     </lightning-card>                                          
                 </div>
+                <div if:true={seleccionarVueloModal} style="height: 300px;">
+                    <lightning-card>
+                        <c-seleccionar-vuelo></c-seleccionar-vuelo>
+                    </lightning-card>    
+                </div>
                 <!-- Modal/Popup Box LWC footer starts here -->
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={closeModalNe} title="Cancel">Cancel</button>
-                    <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">OK</button>
+                    <button class="slds-button slds-button_brand" onclick={closeModalNe} title="OK">OK</button>
                 </footer>
             </div>
         </section>
         <div class="slds-backdrop slds-backdrop_open"></div>
     </template>
-    <template if:true={seleccionarVuelos}>
+
+
+    <template if:true={seleccionarVueloModal}>
         <!-- Modal/Popup Box LWC starts here -->
         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container">
@@ -131,6 +136,13 @@
                     <h2 id="modal-heading-03" class="slds-text-heading_medium slds-hyphenate">Seleccionar Vuelo</h2>
                 </header>
                 <!-- Modal/Popup Box LWC body starts here -->
+                    
+                    <div style="height: 300px;">
+                        <lightning-card>
+                            <c-seleccionar-vuelo></c-seleccionar-vuelo>
+                        </lightning-card>    
+                    </div>    
+                
                 
                 <!-- Modal/Popup Box LWC footer starts here -->
                 <footer class="slds-modal__footer">

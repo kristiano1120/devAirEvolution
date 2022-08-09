@@ -7,11 +7,12 @@ import TITULARDERESERVA_FIELD from '@salesforce/schema/Opportunity.Titular_de_la
 import ESTADO_FIELD from '@salesforce/schema/Opportunity.StageName';
 import NOMBREDERESERVA_FIELD from '@salesforce/schema/Opportunity.Name';
 import FECHADECIERRE_FIELD from '@salesforce/schema/Opportunity.CloseDate';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
+import LISTAPRECIOS_FIELD from '@salesforce/schema/Opportunity.Pricebook2Id';
+import obtenerListaPrecios from '@salesforce/apex/Reserva.obtenerListaPrecios';
 
 export default class ReservaCreator extends LightningElement {
     @api recordId;
+    @api listaPrecios;
     @wire(getRecord, {recordId: '$recordId', fields: [NAME_FIELD]}) record;
 
 
@@ -26,18 +27,18 @@ export default class ReservaCreator extends LightningElement {
     
 
     createOpportunity(){
-        this.dispatchEvent(new CustomEvent('cerrar'));
         
         const fields = {}
         fields[TITULARDERESERVA_FIELD.fieldApiName] = this.recordId;
         fields[NOMBREDERESERVA_FIELD.fieldApiName] = this.contactName;
         fields[ESTADO_FIELD.fieldApiName] = this.estado;
         fields[FECHADECIERRE_FIELD.fieldApiName] = this.fecha;    
-       
+        fields[LISTAPRECIOS_FIELD.fieldApiName] = this.listaPrecios;    
+        
         const recordInput ={apiName: OPPORTUNITY_OBJECT.objectApiName, fields };
         console.log(recordInput);
         createRecord(recordInput)
-
+        
         
         .then(opportunity => {
             
@@ -45,6 +46,7 @@ export default class ReservaCreator extends LightningElement {
             console.log(fields);
             console.log('Reserva creada con éxito');
             this.dispatchEvent(new CustomEvent('mensaje'));
+            this.dispatchEvent(new CustomEvent('cerrarpanel'));
             
         })
         .catch(error => {
