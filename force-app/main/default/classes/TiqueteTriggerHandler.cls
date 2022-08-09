@@ -1,4 +1,4 @@
-public with sharing class TiqueteTriggerHandler implements TriggerHanddler{
+public with sharing class TiqueteTriggerHandler implements TriggerHandler{
     private boolean triggerIsExecuting;
     private integer triggerSize;
     public TiqueteTriggerHandler(boolean triggerIsExecuting, integer triggerSize) {

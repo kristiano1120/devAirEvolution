@@ -45,7 +45,7 @@ public with sharing class Reserva {
     @AuraEnabled(cacheable = true)
     public static List<vueloWrapper> obtenerVuelos(){
        List<Product2> vuelos = [SELECT Id, Name, Aeropuerto_de_Partida__r.Name, Aeropuerto_de_Llegada__r.Name, 
-                                Fecha_y_hora_de_partida__c, Fecha_y_hora_estimada_de_llegada__c 
+                                Fecha_y_hora_de_partida__c, Fecha_y_hora_estimada_de_llegada__c
                                 FROM Product2
                                 WHERE Fecha_y_hora_de_partida__c > today];
         List<vueloWrapper> lista = new List<vueloWrapper>();
@@ -69,6 +69,7 @@ public with sharing class Reserva {
         public Datetime fechaPartida;
         @AuraEnabled
         public Datetime fechaLlegada;
+        
 
         public vueloWrapper(String id, String nombre, String apartida, String allegada, Datetime fPartida, Datetime fllegada) {
             idVuelo = id;
@@ -76,13 +77,14 @@ public with sharing class Reserva {
             aeroPartida = apartida;
             aeroLlegada = allegada;
             fechaPartida = fPartida;
-            fechaLlegada = fllegada;
+            fechaLlegada = fllegada;       
         }    
     }
 
     @AuraEnabled(cacheable = true)
-    public static List<Pricebook2> obtenerListaPrecios(String nombre){
-        List<Pricebook2> idPrecios = [SELECT Id FROM Pricebook2 WHERE Name = :nombre LIMIT 1];
+    public static String obtenerListaPrecios(String nombre){
+        Pricebook2 lista = [SELECT Id FROM Pricebook2 WHERE Name = :nombre LIMIT 1];
+        String idPrecios = lista.Id;
         return idPrecios;
     }
     

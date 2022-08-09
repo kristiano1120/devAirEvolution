@@ -11,6 +11,7 @@ const columns = [
     { label: 'Aeropuerto de llegada', fieldName: 'Aeropuerto_de_Llegada__r', type: 'text' },
     { label: 'Fecha de partida', fieldName: 'Fecha_y_hora_de_partida__c', type: 'date' },
     { label: 'Fecha de llegada', fieldName: 'Fecha_y_hora_estimada_de_llegada__c', type: 'date' },    
+       
     {
         type: 'action',
         typeAttributes: { rowActions: actions },

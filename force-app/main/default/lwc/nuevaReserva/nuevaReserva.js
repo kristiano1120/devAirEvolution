@@ -2,6 +2,7 @@ import { LightningElement, wire } from 'lwc';
 import buscarContacto from '@salesforce/apex/Reserva.buscarContacto';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import obtenerVuelos from '@salesforce/apex/Reserva.obtenerVuelos';
+import obtenerListaPrecios from '@salesforce/apex/Reserva.obtenerListaPrecios';
 
 const actions = [{
     label: 'Seleccionar', name: 'seleccionar',
@@ -21,22 +22,25 @@ const columns = [
 
 export default class NuevaReserva extends LightningElement {
     //metodo para seleccionar vuelos
-    //@wire(listarVuelos)vuelos;    
-    columns = columns;   
+    
+    columns = columns;
+
+   
 
 
     //Mostrar ocultar modal
     modalExisteOpen;
     modalNoExisteOpen;
     seleccionarVueloModal
-    seleccionarVuelo;
+    seleccionarLista;
+    
     closeModalE(){
         this.modalExisteOpen = false;
     }
     closeModalESeleccionVuelo(){
         this.modalExisteOpen = false;
         this.seleccionarVueloModal = true;
-        this.seleccionarVuelo = true;
+        this.seleccionarLista = true;
 
     }
     closeModalNe(){
@@ -46,26 +50,30 @@ export default class NuevaReserva extends LightningElement {
     closeModalSeleccionar(){
         this.seleccionarVueloModal = false;
     } 
+    
+
      //propiedades
     tablaContact;
     tablaReserva;
     reservaComponent;
     doc;    
-    tipo;   
+    tipo;
+    lista;
+    idLista;   
     contacto;
     reserva;
     mensaje;
-    error;  
-    lista;
-    idLista;    
+    error;      
     
-    get optionsTipo() {
+    //opciones para tipo de documento del cliente
+    get options() {
         return [
             { label: 'Cedula de Ciudadanía', value: 'Cedula de Ciudadanía' },
             { label: 'Cedula de Extranjería', value: 'Cedula de Extranjería' },
             { label: 'Tarjeta de Identidad', value: 'Tarjeta de Identidad' },
         ];
     }
+    //opciones para tipo vuelo seleccionado
     get optionsLista() {
         return [
             { label: 'Tiquetes Clase Turista', value: 'Tiquetes Clase Turista' },
@@ -73,20 +81,19 @@ export default class NuevaReserva extends LightningElement {
             { label: 'Tiquetes Carga', value: 'Tiquetes Carga' },
         ];
     }
-
+    
+    //eventos de obtencion de tipo y numero de documento del cliente
     eventChange(event){
         this.doc = event.target.value; 
             console.log(this.doc);
         }
-    handleChangeTipo(event){
+    handleChange(event){
         this.tipo = event.detail.value;
         console.log(this.tipo);
-    }
-    handleChangeLista(e){
-        this.lista = e.detail.value;
-        console.log(this.lita);
-    }  
+    } 
+   
     
+    //mensajes de confirmacion flotantes
     showToastReserva() {
         const event = new ShowToastEvent({
             title: 'Creacion Reserva',
@@ -106,6 +113,7 @@ export default class NuevaReserva extends LightningElement {
         this.dispatchEvent(event);
     }
 
+    //obtiene la info del contacto y la reserva para verificar si existe ese contacto y si hay una reserva a su nombre que impida la creacion de una nueva
     handleBuscar(event){
         buscarContacto({documento: this.doc, tipo: this.tipo})
         .then((result) => {   
@@ -120,7 +128,8 @@ export default class NuevaReserva extends LightningElement {
                 this.tablaContact = true;                
                 if (this.reserva == undefined) {
                     this.tablaReserva = false;
-                    this.reservaComponent = true;
+                    this.seleccionarLista = true; 
+                    this.reservaComponent = true;    
                 } else {
                     this.tablaReserva = true;                    
                 }         
@@ -134,16 +143,22 @@ export default class NuevaReserva extends LightningElement {
             }   
         });        
     }
-    handleBuscarLista(){
-        obtenerVuelos({nombre: this.lista})
-        .then((result) => {
-            this.idLista = result.idPrecios;
-        }).catch((err) => {});
+    //obtiene el Id de la lista de precios de acuerdo a lo que elija el agente para crear la reserva y los respectivos tiquetes al cliente
+    handleChangeLista(event){
+        this.lista = event.detail.value;
+        console.log(this.lista);  
+        obtenerListaPrecios({nombre: this.lista})
+        .then((result) => {   
+            this.idLista = result;
+            console.log('hola-->'+result);    
+            console.log('hola-->'+this.idLista);    
+        }).catch((err) => {
+            console.log('hola-->'+this.err);    
+        });              
     }
-
+   
     
-    
-    //propiedades tabla
+    //propiedades tabla contacto
     get nombre(){
         if (this.contacto != null) {
             return this.contacto.Name;            
@@ -186,8 +201,19 @@ export default class NuevaReserva extends LightningElement {
             return '' 
         }
     }
+    //propiedad  id lista de precios 
+    get idLista1(){
+        if (this.idLista != null) {
+            return this.idLista            
+        } else {
+            return 'hola' 
+        }
+    }
+    
 
-    //codigo para el row action
+
+
+    //codigo para el row actions
     /* idVuelo;
     nombreVuelo;
     aeroPartida;
