@@ -17,7 +17,7 @@ public with sharing class Reserva {
             resList = [SELECT Id, Name, StageName
                             FROM Opportunity
                             WHERE Titular_de_la_reserva__c = :con.id
-                            AND StageName NOT IN ('Pagado', 'Completado')];
+                            AND StageName NOT IN ('Pagado', 'No pagado')];
             if (resList.size() > 0) {
                 res = resList[0];
             } 

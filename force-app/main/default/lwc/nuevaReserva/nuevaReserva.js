@@ -219,9 +219,7 @@ export default class NuevaReserva extends LightningElement {
             return 'hola' 
         }
     }
-    obtenerId(event){
-        console.log(event);
-    }
+   
 
      //metodo para seleccionar vuelos
      @wire(obtenerVuelos, ({idPrecio: '$idLista'}))vuelos;
@@ -246,14 +244,8 @@ export default class NuevaReserva extends LightningElement {
     
     handleAction(event){        
         this.idVuelo = event.detail.row.idVuelo;
-        console.log(this.idVuelo);
         this.nombreVuelo = event.detail.row.nombreVuelo; 
-        console.log(this.nombreVuelo);
         this.aeroPartida = event.detail.row.aeroPartida; 
-        console.log(this.aeroPartida);
-        console.log(this.idReserva);
-        console.log(this.idVuelo);
-        console.log(this.idContacto);
         this.aeroLlegada = event.detail.row.aeroLlegada; 
         this.fechaPartida = event.detail.row.fechaPartida; 
         this.fechaLlegada = event.detail.row.fechaLlegada;
@@ -263,8 +255,7 @@ export default class NuevaReserva extends LightningElement {
                 this.seleccionarVueloModal = false;
                 this.seleccionarPasajerosModal = true;
             }).catch((errores) => {
-                console.log(errores);
-                
+                console.log(errores);                
             });
     }
     
@@ -274,26 +265,33 @@ export default class NuevaReserva extends LightningElement {
             this.error = undefined;
             this.contacto = result.contacto;
             console.log(this.contacto);
-            this.reserva = result.oportunidad;
+            this.reserva = result.reserva;
             if(this.contacto === undefined){
-                this.crearCliente = true;
-            } else{
+                this.seleccionarPasajerosModal = false; 
+                this.modalNoExisteOpen = true;
+            } else {
                 this.idContacto = this.contacto.Id;
+                console.log(this.idContacto);
+                console.log(this.contacto);
+                this.nuevoTiquete();
             } 
         })
         .catch((error) => {
             this.error = error;
             this.contacto = undefined;
             this.reserva = undefined;
-        })
-        //
+        })            
+    }
+    nuevoTiquete(){
+        console.log(this.idContacto);
         crearTiquete({reserva: this.idReserva, vuelo: this.idVuelo, contacto: this.idContacto})
         .then((result) => {
+            console.log(this.idContacto);
             console.log(result);
         })
         .catch((error) => {
             console.log(error);
-        })    
+        })
     }
 
     
