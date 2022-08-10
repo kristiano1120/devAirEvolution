@@ -3,6 +3,7 @@ import buscarContacto from '@salesforce/apex/Reserva.buscarContacto';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import obtenerVuelos from '@salesforce/apex/Reserva.obtenerVuelos';
 import obtenerListaPrecios from '@salesforce/apex/Reserva.obtenerListaPrecios';
+import crearTiquete from '@salesforce/apex/Reserva.crearTiquete';
 
 const actions = [{
     label: 'Seleccionar', name: 'seleccionar',
@@ -14,6 +15,7 @@ const columns = [
     { label: 'Aeropuerto de llegada', fieldName: 'aeroLlegada', type: 'text' },
     { label: 'Fecha de partida', fieldName: 'fechaPartida', type: 'date' },
     { label: 'Fecha de llegada', fieldName: 'fechaLlegada', type: 'date' },    
+    { label: 'Valor', fieldName: 'valor'},    
     {
         type: 'action',
         typeAttributes: { rowActions: actions },
@@ -21,9 +23,7 @@ const columns = [
 ];
 
 export default class NuevaReserva extends LightningElement {
-    //metodo para seleccionar vuelos
-    
-    columns = columns;
+   
 
    
 
@@ -33,6 +33,7 @@ export default class NuevaReserva extends LightningElement {
     modalNoExisteOpen;
     seleccionarVueloModal
     seleccionarLista;
+    seleccionarPasajerosModal;
     
     closeModalE(){
         this.modalExisteOpen = false;
@@ -41,7 +42,9 @@ export default class NuevaReserva extends LightningElement {
         this.modalExisteOpen = false;
         this.seleccionarVueloModal = true;
         this.seleccionarLista = true;
-
+    }
+    closeSeleccionarPasajerosModal(){
+        this.seleccionarPasajerosModal = false;
     }
     closeModalNe(){
         this.modalNoExisteOpen = false;
@@ -121,6 +124,7 @@ export default class NuevaReserva extends LightningElement {
                 this.reserva = result.reserva;   
                 console.log(this.contacto);
                 console.log(this.reserva);      
+                console.log(this.idLista1);      
             if (this.contacto == undefined) {
                 this.modalNoExisteOpen = true;
             }else{
@@ -194,13 +198,19 @@ export default class NuevaReserva extends LightningElement {
             return '' 
         }
     }
-    get id(){
+    get idContacto(){
         if (this.contacto != null) {
             return this.contacto.Id;            
         } else {
             return '' 
         }
     }
+    /* get idReserva(){if (this.reserva != null) {
+        return this.reserva.Id;            
+        } else {
+            return '' 
+        }
+    } */
     //propiedad  id lista de precios 
     get idLista1(){
         if (this.idLista != null) {
@@ -209,24 +219,82 @@ export default class NuevaReserva extends LightningElement {
             return 'hola' 
         }
     }
+    obtenerId(event){
+        console.log(event);
+    }
+
+     //metodo para seleccionar vuelos
+     @wire(obtenerVuelos, ({idPrecio: '$idLista'}))vuelos;
+     columns = columns;
     
 
 
 
     //codigo para el row actions
-    /* idVuelo;
+    idVuelo;
     nombreVuelo;
     aeroPartida;
     aeroLlegada;
     fechaPartida;
     fechaLlegada;
+    idReserva;
+
+    createOpportunity(event){
+        this.idReserva = event.detail;
+        console.log(this.idReserva);
+    }
+    
     handleAction(event){        
         this.idVuelo = event.detail.row.idVuelo;
-        this.nombreVuelo = event.detail.row.Name; 
+        console.log(this.idVuelo);
+        this.nombreVuelo = event.detail.row.nombreVuelo; 
+        console.log(this.nombreVuelo);
         this.aeroPartida = event.detail.row.aeroPartida; 
+        console.log(this.aeroPartida);
+        console.log(this.idReserva);
+        console.log(this.idVuelo);
+        console.log(this.idContacto);
         this.aeroLlegada = event.detail.row.aeroLlegada; 
         this.fechaPartida = event.detail.row.fechaPartida; 
         this.fechaLlegada = event.detail.row.fechaLlegada;
-    } */
+        crearTiquete({reserva: this.idReserva, vuelo: this.idVuelo, contacto: this.idContacto})
+            .then((resultados) => {
+                console.log('result-->'+resultados);
+                this.seleccionarVueloModal = false;
+                this.seleccionarPasajerosModal = true;
+            }).catch((errores) => {
+                console.log(errores);
+                
+            });
+    }
+    
+    agregarPasajeros(event){
+        buscarContacto({documento: this.doc, tipo: this.tipo})
+        .then((result) => {
+            this.error = undefined;
+            this.contacto = result.contacto;
+            console.log(this.contacto);
+            this.reserva = result.oportunidad;
+            if(this.contacto === undefined){
+                this.crearCliente = true;
+            } else{
+                this.idContacto = this.contacto.Id;
+            } 
+        })
+        .catch((error) => {
+            this.error = error;
+            this.contacto = undefined;
+            this.reserva = undefined;
+        })
+        //
+        crearTiquete({reserva: this.idReserva, vuelo: this.idVuelo, contacto: this.idContacto})
+        .then((result) => {
+            console.log(result);
+        })
+        .catch((error) => {
+            console.log(error);
+        })    
+    }
+
     
 }
