@@ -92,8 +92,10 @@ public with sharing class TiqueteTriggerHandler implements TriggerHandler{
         for (Opportunity r: opportunityNew){
             for (OpportunityLineItem t : opportunityLineItemNew) {
                 if(t.OpportunityId == r.Id){
-                    t.Pasajero__c = r.Titular_de_la_reserva__c;
+                    if (t.Pasajero__c == null) {
+                        t.Pasajero__c = r.Titular_de_la_reserva__c;
                     System.debug('Entró');   
+                    }
                 }
                 
             }

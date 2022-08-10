@@ -18,3 +18,12 @@ p {
     text-align: center;
     color: red;
 }
+
+.modal__container{
+    min-width: 600px;
+    max-width: 1200px;    
+}
+.selecion_vuelo{
+    height: 300PX;
+    max-height: 400px;
+}

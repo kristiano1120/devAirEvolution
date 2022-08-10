@@ -43,14 +43,18 @@ public with sharing class Reserva {
 
 
     @AuraEnabled(cacheable = true)
-    public static List<vueloWrapper> obtenerVuelos(){
+    public static List<vueloWrapper> obtenerVuelos(String idPrecio){
        List<Product2> vuelos = [SELECT Id, Name, Aeropuerto_de_Partida__r.Name, Aeropuerto_de_Llegada__r.Name, 
-                                Fecha_y_hora_de_partida__c, Fecha_y_hora_estimada_de_llegada__c
+                                Fecha_y_hora_de_partida__c, Fecha_y_hora_estimada_de_llegada__c,
+                                (Select unitPrice from PricebookEntries WHERE   Pricebook2Id = :idPrecio)
                                 FROM Product2
                                 WHERE Fecha_y_hora_de_partida__c > today];
         List<vueloWrapper> lista = new List<vueloWrapper>();
         for (Product2 v : vuelos) {
-            lista.add(new vueloWrapper((String)v.Id, v.name, v.Aeropuerto_de_Partida__r.Name, v.Aeropuerto_de_Partida__r.Name, v.Fecha_y_hora_de_partida__c, v.Fecha_y_hora_estimada_de_llegada__c));
+            if (v.PricebookEntries.size() > 0) {
+                lista.add(new vueloWrapper((String)v.Id, v.name, v.Aeropuerto_de_Partida__r.Name, v.Aeropuerto_de_Partida__r.Name,
+                v.Fecha_y_hora_de_partida__c, v.Fecha_y_hora_estimada_de_llegada__c, v.PricebookEntries[0].UnitPrice));
+            }            
         }
 
         return lista;
@@ -69,15 +73,18 @@ public with sharing class Reserva {
         public Datetime fechaPartida;
         @AuraEnabled
         public Datetime fechaLlegada;
+        @AuraEnabled
+        public Decimal valor;
         
 
-        public vueloWrapper(String id, String nombre, String apartida, String allegada, Datetime fPartida, Datetime fllegada) {
+        public vueloWrapper(String id, String nombre, String apartida, String allegada, Datetime fPartida, Datetime fllegada, Decimal precio) {
             idVuelo = id;
             nombreVuelo = nombre;
             aeroPartida = apartida;
             aeroLlegada = allegada;
             fechaPartida = fPartida;
-            fechaLlegada = fllegada;       
+            fechaLlegada = fllegada;
+            valor = precio;       
         }    
     }
 
@@ -87,5 +94,20 @@ public with sharing class Reserva {
         String idPrecios = lista.Id;
         return idPrecios;
     }
-    
+
+    @AuraEnabled
+    public static OpportunityLineItem crearTiquete(String reserva, String vuelo, String contacto){
+        try {
+            OpportunityLineItem tiquete = new OpportunityLineItem(OpportunityId = reserva, Product2Id = vuelo, Pasajero__c = contacto);
+            insert tiquete;
+            String mensaje = 'Hola creé el tiquete';
+            Opportunity op = new Opportunity(Id = reserva, StageName = 'Completado');
+            Update op;
+            return tiquete;
+            
+        } catch (Exception e) {
+            System.debug(e.getMessage());
+            return null;
+        }
+    }
 }

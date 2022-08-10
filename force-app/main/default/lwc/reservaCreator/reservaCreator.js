@@ -47,6 +47,9 @@ export default class ReservaCreator extends LightningElement {
             console.log('Reserva creada con éxito');
             this.dispatchEvent(new CustomEvent('mensaje'));
             this.dispatchEvent(new CustomEvent('cerrarpanel'));
+
+            const idreserva = this.opportunityId;
+            this.dispatchEvent(new CustomEvent('idreserva', {detail: idreserva}));
             
         })
         .catch(error => {
