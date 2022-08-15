@@ -242,6 +242,11 @@ export default class NuevaReserva extends LightningElement {
         console.log(this.idReserva);
     }
     
+    /**
+     * Una función que se llama cuando el usuario hace clic en una fila de la tabla. Se utiliza para
+     * seleccionar un vuelo.
+     * @param event - El objeto de evento que se disparó.
+     */
     handleAction(event){        
         this.idVuelo = event.detail.row.idVuelo;
         this.nombreVuelo = event.detail.row.nombreVuelo; 
