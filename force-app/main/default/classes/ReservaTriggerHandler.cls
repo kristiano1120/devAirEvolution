@@ -58,7 +58,7 @@ public with sharing class ReservaTriggerHandler implements TriggerHandler {
                 mail.setSubject('CONFIRMACION DE RESERVA');
                 //Cuerpo del mensaje
                 mail.setPlainTextBody('Hola '+ opp.Titular_de_la_reserva__c +' para nosotros es un placer informale que su reserva número ' 
-                                    + opp.Numero_de_reserva__c + ' ha sido creada exitosamente');
+                                    + opp.Numero_de_reserva__c + ' ha sido pagada exitosamente por un valor total de ' + opp.Valor_total__c);
                 //Firma del mensaje
                 mail.setUseSignature(false);
                 //Mensaje

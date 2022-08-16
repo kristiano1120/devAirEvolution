@@ -1,8 +1,6 @@
 public with sharing class DescuentoMartesBatch implements Database.Batchable<sObject>{
     public Database.QueryLocator start(Database.BatchableContext BC){
-        return Database.getQueryLocator('SELECT Id, UnitPrice FROM PricebookEntry'+ 
-                                        'WHERE Descuento_50__c = FALSE'+
-                                        ' AND Descuento_martes__c =  FALSE' );
+        return Database.getQueryLocator('SELECT Id, UnitPrice FROM PricebookEntry WHERE Descuento_50__c = FALSE');
     }
 
     public void execute(Database.BatchableContext BC, List<PricebookEntry> prices){
@@ -12,6 +10,17 @@ public with sharing class DescuentoMartesBatch implements Database.Batchable<sOb
             p.Descuento_martes__c = true;        
         } 
         update prices;
+
+        Profile ventas = [SELECT Id, Name FROM Profile WHERE Name = 'Grupo de Ventas' LIMIT 1];
+
+        List<User> usuarios = [SELECT Id, Name FROM User WHERE ProfileId = :ventas.Id AND isActive = true];
+        List<Event> eventos = new List<Event>();
+        if (usuarios.size() > 0) {
+            for (User u : usuarios) {
+                eventos.add(new Event(OwnerId = u.Id, StartDateTime = DateTime.now(), EndDateTime = DateTime.now().addHours(15), Subject = 'Martes de descuento'));
+            }
+            Insert eventos;
+        }
     }
 
     public void finish(Database.BatchableContext BC){
