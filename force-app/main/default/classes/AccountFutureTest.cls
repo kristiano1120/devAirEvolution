@@ -1,24 +1,34 @@
 @isTest
 public class AccountFutureTest {
 	
+    @TestSetup
+    static void makeData(){
+       /*  List<Account> ctas = new List<Account>();
+        for (Integer i = 0; i < 2; i++) {
+            Account acc = new Account(Name = 'nombre test'+i);
+            ctas.add(acc);
+        }
+        insert ctas; */
+    }
+    
     @isTest
     static void actualizarAcc(){
         
-        Account acc = new Account(Name = 'nombre test');
-        insert acc;
-        
-        
-        
         
         test.startTest();
-        MetodoFuture.actualizarAcc(acc.Id);
-        AcconunFutureSLA.crearCuenta(acc.Id);
-        List<Account> nueva = [SELECT SLASerialNumber__c 
+        String name = 'nombre test';
+        AcconunFutureSLA.crearCuenta(name);
+        Account cta =[SELECT id, Name FROM Account WHERE name = 'nombre test' LIMIT 1];
+        System.debug(cta);
+
+        String id = cta.Id;
+        MetodoFuture.actualizarAcc(id);
+        test.stopTest();
+        List<Account> ctasList = [SELECT SLASerialNumber__c 
                          FROM Account
                          WHERE name = 'nombre test'
                          AND SLASerialNumber__c != null];
         
-        test.stopTest();
-        system.assertEquals(1, nueva.size());	
+        system.assertEquals(1, ctasList.size());	
     }
 }
