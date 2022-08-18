@@ -2,75 +2,59 @@
 public with sharing class TripulacionTest {
     @TestSetup
     static void makeData(){
-        List<Contact> auxiliares = new List<Contact>();
-        for(Integer i = 0; i < 2; i++){
-        contact contacto = new contact(LastName = 'Facundo '+i, Tipo_de_Identificaci_n__c = 'Cédula de ciudadanía', 
-                                        Numero_de_Identificacion__c = '1255'+i, N_mero_de_Pasaporte__c = '1020'+i, RecordTypeId = '0128a000000YVvvAAG',
-                                        Tipo_de_contrato__c = 'Indefinido');
-        auxiliares.add(contacto);
+        Contact cto = new Contact(LastName = 'AuxiliarPrueba',
+                                Numero_de_Identificacion__c = '12345678',
+                                RecordTypeId = '0128a000000lBUIAA2');
+        insert cto;
+
+        Avion__c av = new Avion__c(Tipo__c = 'Airbus A330');
+        insert av;
+        
+        DateTime limitDate = DateTime.now().addDays(7);
+        List<Product2> vuelos = new List<Product2>();
+        for (Integer i = 0; i < 20  ; i++) {
+            Product2 vuelo = new Product2(Name = 'A'+i,
+                                    IsActive = true,
+                                    Estado__c = 'En venta', 
+                                    Fecha_y_hora_de_partida__c = DateTime.now().addDays(1),
+                                    Fecha_y_hora_estimada_de_llegada__c = limitDate,
+                                    Avion__c = av.Id);
+            vuelos.add(vuelo);
         }
-        insert auxiliares; 
+        Insert vuelos;
 
-        Avion__c avion = new Avion__c(Numero_de_pasajeros_negocios__c	 = 30, Numero_de_pasajeros_Clase_Turista__c = 222);
-        insert avion;
-
-        Product2 vuelo = new Product2(Name = 'AE-0001',
-                                Avion__c = avion.Id,
-                                Fecha_y_hora_de_partida__c = datetime.now()+2,
-                                Fecha_y_hora_estimada_de_llegada__c = (datetime.now()+2).addHours(1),
-                                Aeropuerto_de_Partida__c = 'a018a00000zWkKGAA0',
-                                Aeropuerto_de_Llegada__c = 'a018a00000zWkK1AAK',
-                                IsActive = true,
-                                Estado__c = 'En venta');
-        insert vuelo;
-
-        contact obtConct = [SELECT Id FROM Contact LIMIT 1];
-        Product2 vuelos = [SELECT Id FROM Product2 LIMIT 1];
-
-        Auxiliares_x_Vuelo__c auxiliar  = new Auxiliares_x_Vuelo__c( Nombre_de_Tripulante__c = obtConct.Id, Vuelo__c = vuelos.Id);
-        insert auxiliar;
-    }
-
-    //Se comprueba que el el metodo obtenga el vuelo dentro del rango de obtención
-    @isTest
-    private static void obtieneUnVuelo(){
-            List<Tripulacion.vuelo> vuelos = Tripulacion.obternerVuelos();
-            System.assertEquals(1, vuelos.size());
-    }
-
-    //
-    @isTest
-    private static void errorEnVuelo(){
-        Avion__c avion = [SELECT Id FROM Avion__c LIMIT 1];
-        delete avion;
-        try{
-            List<Tripulacion.vuelo> vuelos = Tripulacion.obternerVuelos();
-        } catch (Exception e){
-            List<Avion__c> listaAvion = [SELECT Id FROM Avion__c LIMIT 1];
-            System.assertEquals(0, listaAvion.size());
+        List<Auxiliares_x_Vuelo__c> auxv = new List<Auxiliares_x_Vuelo__c>();
+        for (Product2 v : vuelos) {
+            Auxiliares_x_Vuelo__c aux = new Auxiliares_x_Vuelo__c(Nombre_de_Tripulante__c = cto.Id,                                                                 
+                                                                Vuelo__c = v.Id);
+        auxv.add(aux);                      
         }
+        insert auxv;
+
+        
     }
 
     @isTest
-    private static void obtieneAuxiliares(){
-        Product2 vuelos = [SELECT Id FROM Product2 LIMIT 1];
-        List<Tripulacion.opcion> opciones = Tripulacion.obtenerAxiliares(vuelos.Id);
+    private static void obtenerVuelosTodos() {        
+        //List<Tripulacion.vuelo> vuelos = Tripulacion.obtenerVuelos();
+        //System.assertEquals(20, vuelos.size());
+    }
+    
+    @isTest
+    private static void obtenerAuxiliares() {
+        /* Product2 vuelo = [Select id from Product2 LIMIT 1]
+        insert vuelo */
+        //List<Tripulacion.vuelo> vuelos = Tripulacion.obternerVuelos();
+        List<Tripulacion.opcion> aux = Tripulacion.obtenerAxiliares('');        
+        System.assertEquals(1, aux.size());
 
-        System.assertEquals(3, opciones.size());
-
+        Product2 vuelo = [Select id from Product2 LIMIT 1];       
+        List<Tripulacion.opcion> aux1 = Tripulacion.obtenerAxiliares(vuelo.id);        
+        System.assertEquals(2, aux1.size());
     }
 
     @isTest
-    private static void saveAuxiliares(){
-        Product2 vuelo = [SELECT Id FROM Product2 LIMIT 1];
-        List<Contact> auxiliares = [SELECT ID FROM Contact];
-        List<String> listaAuxiliares = new List<String>();
-        for (Contact c : auxiliares) {
-            listaAuxiliares.add((string)c.Id);
-        }
-        Tripulacion.saveAuxiliares(listaAuxiliares, vuelo.Id);
-        Product2 vuelos = [SELECT Id FROM Product2 LIMIT 1];
-        List<Tripulacion.opcion> opciones = Tripulacion.obtenerAxiliares(vuelos.Id);
-        System.assertEquals(4, opciones.size());
+    private static void obtenerTripulantes() {
+        
     }
 }

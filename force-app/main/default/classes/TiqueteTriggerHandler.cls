@@ -42,50 +42,44 @@ public with sharing class TiqueteTriggerHandler implements TriggerHandler{
 
     //No se puede sobrevender mas alla del 10% del total de asientos en el vuelo
     public static void evitarSobreventa(List<OpportunityLineItem > TiqueteNew){
-        try {
-            set <Id> idTiquetes = new set<Id>();
-            for (opportunityLineItem Tiquete : tiqueteNew){
-                idTiquetes.add(Tiquete.Product2Id);
+        set <Id> idTiquetes = new set<Id>();
+        for (opportunityLineItem Tiquete : tiqueteNew){
+            idTiquetes.add(Tiquete.Product2Id);
+        }
+        map<id , product2> productos = new map<id , product2>([select ID,avion__r.Numero_de_pasajeros_negocios__c,avion__r.Numero_de_pasajeros_Clase_Turista__c 
+                                                                from Product2 where Id IN :idTiquetes]); 
+        AggregateResult[] groupedResults = [SELECT Count(Id),Product2Id FROM OpportunityLineItem where Product2Id IN :idTiquetes GROUP BY Product2Id  ];
+        List<Product2> vuelos = new List<Product2>();
+        for (AggregateResult ar : groupedResults){
+            system.debug(ar.get('Product2Id'));
+            system.debug(ar.get('expr0'));
+            decimal pasajerosTotales =productos.get((string)ar.get('Product2Id')).avion__r.Numero_de_pasajeros_negocios__c+productos.get((string)ar.get('Product2Id')).avion__r.Numero_de_pasajeros_Clase_Turista__c;
+            if ((pasajerosTotales*1.1)<(integer)ar.get('expr0')) {
+                vuelos.add(new product2(id=(string)ar.get('Product2Id')));
             }
-            map<id , product2> productos = new map<id , product2>([SELECT ID, avion__r.Id, avion__r.Numero_de_pasajeros_negocios__c, avion__r.Numero_de_pasajeros_Clase_Turista__c 
-                                                                    FROM Product2 WHERE Id IN :idTiquetes]); 
-                                                                    System.debug('hola'+productos);
-            AggregateResult[] groupedResults = [SELECT Count(Id),Product2Id FROM OpportunityLineItem WHERE Product2Id IN :idTiquetes GROUP BY Product2Id];
-            List<Product2> vuelos = new List<Product2>();
-            for (AggregateResult ar : groupedResults){
-                system.debug(ar.get('Product2Id'));
-                system.debug(ar.get('expr0'));
-                decimal pasajerosTotales = productos.get((string)ar.get('Product2Id')).avion__r.Numero_de_pasajeros_negocios__c + productos.get((string)ar.get('Product2Id')).avion__r.Numero_de_pasajeros_Clase_Turista__c;
-                if ((pasajerosTotales*1.1)<(integer)ar.get('expr0')) {
-                    vuelos.add(new product2(id=(string)ar.get('Product2Id')));
-                }
-                
-            }
-            for(opportunityLineItem a: tiqueteNew){
+            
+        }
+        for(opportunityLineItem a: tiqueteNew){
             for(product2 p: vuelos){
                 if (a.Product2Id==p.Id){
                     a.adderror('No es posible sobrevender los tiquetes');
                 }
             }
         }
-        } catch (Exception e) {
-            system.debug(e.getMessage());
-        }
-        
     }
 
     //Si un tiquete es de clase de negocios, utomaticamente asignar el qequipaje permitido completo
     public static void asignarEquipajeNegocios(List<OpportunityLineItem> tiquetes){
-        Pricebook2 listaDePrecios = [SELECT ID FROM Pricebook2 WHERE Name = 'Tiquetes Clase Negocios' LIMIT 1];
-        set<Id> idVuelos = new set<Id>();
+        set <Id> idVuelos = new set<Id>();
         for (OpportunityLineItem tiq : tiquetes) {
-            idVuelos.add(tiq.OpportunityId);            
+            idVuelos.add(tiq.product2id);            
         }
-        List<Opportunity> reservas = [SELECT Id FROM Opportunity WHERE Id IN : idVuelos AND Pricebook2Id =: listaDePrecios.Id];
-        for (OpportunityLineItem enLis: tiquetes) {
-            for (Opportunity tiq : reservas) {
-                if (enLis.OpportunityId == tiq.Id){
-                    enLis.Equipaje_permitido__c = 'Personal;Maleta de cabina;Maleta de bodega';
+        String idNegocios = [SELECT id FROM Pricebook2 WHERE Name = 'Tiquetes Clase Negocios' LIMIT 1].Id;
+        List<PricebookEntry> listEntry = [SELECT Id, Pricebook2Id, Product2Id FROM PricebookEntry WHERE Pricebook2Id =: IdNegocios AND Product2Id IN : idVuelos];
+        for (PricebookEntry enLis: listEntry) {
+            for (OpportunityLineItem tiq : tiquetes) {
+                if (tiq.product2id == enLis.product2id){
+                    tiq.Equipaje_permitido__c = 'Personal;Maleta de cabina;Maleta de bodega';
                 }
             }
         }
