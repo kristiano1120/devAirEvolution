@@ -2,24 +2,15 @@
 public with sharing class DescuentoVeinticuatroTest {
     @TestSetup
     static void makeData(){
-        List<Contact> lista = new List<Contact>();
-        for(Integer i = 0; i < 2; i++){
-            Contact cto = new Contact(FirstName = 'Abigail', LastName = 'Gray', 
-                                  Tipo_de_Identificaci_n__c = 'Cedula de Extranjería', 
-                                  Numero_de_Identificacion__c = String.valueof(i));
-            lista.add(cto);
-        }
-        insert lista;
-        String id = lista[0].Id;
-        //Insertar avion 
+        
         Avion__c avion = new Avion__c(Tipo__c  = 'Airbus A330', Numero_de_pasajeros_negocios__c = 30, 
         Numero_de_pasajeros_Clase_Turista__c = 222);
         insert avion;
         String idAvion = avion.Id;
         List<Product2> Vuelos = new List<Product2>();
         for(Integer i = 0; i < 2; i++){
-            Product2 vuelo = new Product2(Name = 'AE-2552', 
-                                        Fecha_y_hora_de_partida__c = System.today().addDays(1), 
+            Product2 vuelo = new Product2(Name = 'AE-2552'+i, 
+                                        Fecha_y_hora_de_partida__c = System.now().addHours(12), 
                                         Avion__c = idAvion );
             Vuelos.add(vuelo);
         }
@@ -41,14 +32,13 @@ public with sharing class DescuentoVeinticuatroTest {
         insert turista;
         
         PricebookEntry entrada = new PricebookEntry(Pricebook2Id = turista.id, Product2Id = idV, 
-                                                    UnitPrice = 20000, isActive = true);
+                                                    UnitPrice = 20000, isActive = true,
+                                                    Descuento_martes__c = false,
+                                                    Descuento_50__c = false);
         insert entrada;
         
         
-        Opportunity res = new Opportunity(Name = 'A', Titular_de_la_reserva__c = id, 
-                                        CloseDate = System.today(), StageName = 'Pre-venta', 
-                                        Pricebook2Id = turista.Id);
-        Insert res;
+        
     }
 
     
@@ -67,10 +57,12 @@ public with sharing class DescuentoVeinticuatroTest {
         
        
         Test.stopTest();
-        
+        List<Product2> vuelos = [SELECT Id FROM Product2];
+        String idV = vuelos[0].id;
         List<PricebookEntry> entradaConDescuento = [SELECT Id 
                                 FROM PricebookEntry 
-                                WHERE Descuento_50__c = true];
+                                WHERE Descuento_50__c = true
+                                AND product2id = :idV];
         System.assertEquals(2, entradaConDescuento.size());
     }
 }

@@ -126,20 +126,22 @@ export default class NuevaReserva extends LightningElement {
         .then((result) => {   
                 this.contacto = result.contacto;
                 this.reserva = result.reserva;   
-                console.log(this.contacto);
-                console.log(this.reserva);      
-                console.log(this.idLista1);      
+                console.log('handleBuscar--->'+this.contacto);
+                console.log('handleBuscar--->'+this.reserva);      
+                console.log('handleBuscar--->'+this.idLista1);      
             if (this.contacto == undefined) {
                 this.modalNoExisteOpen = true;
             }else{
                 this.modalExisteOpen = true;                
                 this.tablaContact = true;                
-                if (this.reserva == undefined) {
+                if (this.reserva === undefined) {
                     this.tablaReserva = false;
                     this.seleccionarLista = true; 
                     this.reservaComponent = true;    
-                } else {
-                    this.tablaReserva = true;                    
+                } else if(this.reserva != undefined){
+                    this.tablaReserva = true;
+                    this.seleccionarLista = false;
+                    this.reservaComponent = false;                    
                 }         
             }
             this.error = undefined;       
@@ -158,10 +160,10 @@ export default class NuevaReserva extends LightningElement {
         obtenerListaPrecios({nombre: this.lista})
         .then((result) => {   
             this.idLista = result;
-            console.log('hola-->'+result);    
-            console.log('hola-->'+this.idLista);    
+            console.log('handleChangeLista-->'+result);    
+            console.log('handleChangeLista-->'+this.idLista);    
         }).catch((err) => {
-            console.log('hola-->'+this.err);    
+            console.log('handleChangeLista-->'+this.err);    
         });              
     }
    
@@ -209,12 +211,12 @@ export default class NuevaReserva extends LightningElement {
             return '' 
         }
     }
-    /* get idReserva(){if (this.reserva != null) {
+    get idReserva(){if (this.reserva != null) {
         return this.reserva.Id;            
         } else {
-            return '' 
+            return 'get reserva' 
         }
-    } */
+    }
     //propiedad  id lista de precios 
     get idLista1(){
         if (this.idLista != null) {
@@ -228,7 +230,7 @@ export default class NuevaReserva extends LightningElement {
     }
 
      //metodo para seleccionar vuelos
-     @wire(obtenerVuelos, ({idPrecio: '$idLista'}))vuelos;
+     @wire(obtenerVuelos, ({idPrecio: '$idLista1'}))vuelos;
      columns = columns;
     
 
@@ -242,6 +244,7 @@ export default class NuevaReserva extends LightningElement {
     fechaPartida;
     fechaLlegada;
     idReserva;
+    idContactoN;
 
     createOpportunity(event){
         this.idReserva = event.detail;
@@ -254,10 +257,10 @@ export default class NuevaReserva extends LightningElement {
         this.nombreVuelo = event.detail.row.nombreVuelo; 
         console.log(this.nombreVuelo);
         this.aeroPartida = event.detail.row.aeroPartida; 
-        console.log(this.aeroPartida);
-        console.log(this.idReserva);
-        console.log(this.idVuelo);
-        console.log(this.idContacto);
+        console.log('handleAction-->'+this.aeroPartida);
+        console.log('handleAction-->'+this.idReserva);
+        console.log('handleAction-->'+this.idVuelo);
+        console.log('handleAction-->'+this.idContacto);
         this.aeroLlegada = event.detail.row.aeroLlegada; 
         this.fechaPartida = event.detail.row.fechaPartida; 
         this.fechaLlegada = event.detail.row.fechaLlegada;
@@ -282,22 +285,23 @@ export default class NuevaReserva extends LightningElement {
             if(this.contacto === undefined){
                 this.crearCliente = true;
             } else{
-                this.idContacto = this.contacto.Id;
-            } 
+                this.idContactoN = this.contacto.Id;
+            }
+            //
+        crearTiquete({reserva: this.idReserva, vuelo: this.idVuelo, contacto: this.idContactoN})
+        .then((resultT) => {
+            console.log(resultT);
+        })
+        .catch((errorT) => {
+            console.log(errorT);
+        }) 
         })
         .catch((error) => {
             this.error = error;
             this.contacto = undefined;
             this.reserva = undefined;
         })
-        //
-        crearTiquete({reserva: this.idReserva, vuelo: this.idVuelo, contacto: this.idContacto})
-        .then((result) => {
-            console.log(result);
-        })
-        .catch((error) => {
-            console.log(error);
-        })    
+            
     }
 
     

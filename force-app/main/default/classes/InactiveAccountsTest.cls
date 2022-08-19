@@ -14,14 +14,14 @@ public class InactiveAccountsTest {
     @IsTest
     static void methodName(){        
         Test.startTest();
-        InactiveAccounts batchClass = new InactiveAccounts('Gold', Date.today()); 
+        InactiveAccounts batchClass = new InactiveAccounts(); 
         ID batchprocessid = Database.executeBatch(batchClass);
         Test.stopTest();
         
         List<Account> accts = [SELECT Id 
                                 FROM Account 
                                 WHERE SLA__c='Gold'
-                                AND SLAExpirationDate__c <: Date.today()
+                                AND SLAExpirationDate__c < today
                                 AND UpsellOpportunity__c = 'No'];
         
         System.assertEquals(0,accts.size());

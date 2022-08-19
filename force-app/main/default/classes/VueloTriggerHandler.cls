@@ -16,23 +16,23 @@ public with sharing class VueloTriggerHandler implements TriggerHandler{
         // helper.doTask4();
         desactiStringVuelo(newRecords);
     }   
-    public void beforeDelete(List<Product2> oldRecords, Map<ID, sObject> oldProduct2Map) {
+    public void beforeDelete(List<Product2> oldRecords, Map<ID, sObject> oldRecordMap) {
         // helper.doTask5();
         // helper.doTask1();
     }
-    public void afterInsert(List<Product2> newRecords, Map<ID, sObject> newProduct2Map) {
+    public void afterInsert(List<Product2> newRecords, Map<ID, sObject> newRecordMap) {
         // helper.doTask2();
         // helper.doTask3();
     }
-    public void afterUpdate(List<Product2> oldRecords, List<Product2> newRecords, Map<ID, sObject> oldProduct2Map, Map<ID, sObject> newProduct2Map) {
+    public void afterUpdate(List<Product2> oldRecords, List<Product2> newRecords, Map<ID, sObject> oldRecordMap, Map<ID, sObject> newRecordMap) {
         // helper.doTask4();
         // helper.doTask5();
     }
-    public void afterDelete(List<Product2> oldRecords, Map<ID, sObject> oldProduct2Map) {
+    public void afterDelete(List<Product2> oldRecords, Map<ID, sObject> oldRecordMap) {
         // helper.doTask3();
         // helper.doTask1();
     }
-    public void afterUndelete(List<Product2> newRecords, Map<ID, sObject> newProduct2Map) {
+    public void afterUndelete(List<Product2> newRecords, Map<ID, sObject> newRecordMap) {
         // helper.doTask4();
         // helper.doTask2();
     }

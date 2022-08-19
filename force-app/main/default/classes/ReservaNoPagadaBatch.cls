@@ -1,6 +1,6 @@
 public with sharing class ReservaNoPagadaBatch implements Database.Batchable<sObject>{
    
-    DateTime fecha = DateTime.now().addMinutes(-1);
+    DateTime fecha = DateTime.now().addHours(-3);
     public Database.QueryLocator start(Database.BatchableContext context){
                 return Database.getQueryLocator('SELECT id, StageName, LastModifiedDate FROM Opportunity');
                 
