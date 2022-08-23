@@ -5,10 +5,12 @@ import obtenerVuelos from '@salesforce/apex/Reserva.obtenerVuelos';
 import obtenerListaPrecios from '@salesforce/apex/Reserva.obtenerListaPrecios';
 import crearTiquete from '@salesforce/apex/Reserva.crearTiquete';
 
+/* Creación de una matriz de objetos que se utilizarán para crear las acciones de fila. */
 const actions = [{
     label: 'Seleccionar', name: 'seleccionar',
 },];
 
+/* Definición de las columnas de la tabla. */
 const columns = [
     { label: 'Vuelo', fieldName: 'nombreVuelo' },
     { label: 'Aeropuerto de partida', fieldName: 'aeroPartida', type: 'text' },
@@ -23,11 +25,6 @@ const columns = [
 ];
 
 export default class NuevaReserva extends LightningElement {
-   
-
-   
-
-
     //Mostrar ocultar modal
     modalExisteOpen;
     modalNoExisteOpen;
@@ -35,6 +32,9 @@ export default class NuevaReserva extends LightningElement {
     seleccionarLista;
     seleccionarPasajerosModal;
     
+    /**
+     * Cierra el modal y si el usuario no ha hecho reserva o contacto vuelve a buscar
+     */
     closeModalE(){
         this.modalExisteOpen = false;
         if (this.reserva == null && this.contacto == null) {
@@ -42,18 +42,32 @@ export default class NuevaReserva extends LightningElement {
         }else if (this.contacto != null && this.reserva == null) {
         }    
     }
+    /**
+     * Cierra el modal que dice "No hay vuelo disponible para la fecha seleccionada" y abre el modal
+     * que dice "Selecciona un vuelo" y muestra la lista de vuelos
+     */
     closeModalESeleccionVuelo(){
         this.modalExisteOpen = false;
         this.seleccionarVueloModal = true;
         this.seleccionarLista = true;
     }
+    /**
+     * Esta función cierra el modal que permite al usuario seleccionar los pasajeros que viajarán
+     */
     closeSeleccionarPasajerosModal(){
         this.seleccionarPasajerosModal = false;
     }
+    /**
+     * Esta función cierra la ventana modal que aparece cuando el usuario intenta agregar un nuevo
+     * elemento a la lista, pero el elemento ya existe.
+     */
     closeModalNe(){
         this.modalNoExisteOpen = false;
         
     }
+    /**
+     * Cierra el modal.
+     */
     closeModalSeleccionar(){
         this.seleccionarVueloModal = false;
     } 
@@ -94,6 +108,11 @@ export default class NuevaReserva extends LightningElement {
         this.doc = event.target.value; 
             console.log(this.doc);
         }
+    /**
+     * La función handleChange se llama cuando el usuario selecciona un valor del menú desplegable. El
+     * valor seleccionado se almacena en la variable tipo
+     * @param event - El objeto de evento
+     */
     handleChange(event){
         this.tipo = event.detail.value;
         console.log(this.tipo);
@@ -110,6 +129,11 @@ export default class NuevaReserva extends LightningElement {
         });
         this.dispatchEvent(event);
     }
+    /**
+     * La función showToastContacto() se llama cuando el usuario hace clic en el botón "Crear Contacto"
+     * y muestra un mensaje de brindis con el título "Creacion Contacto" y el mensaje "Contacto creado
+     * exitosamente"
+     */
     showToastContacto() {
         const event = new ShowToastEvent({
             title: 'Creacion Contacto',
@@ -246,11 +270,22 @@ export default class NuevaReserva extends LightningElement {
     idReserva;
     idContactoN;
 
+    /**
+     * La función se llama cuando el componente secundario activa un evento. El evento contiene la
+     * identificación del registro que se creó en el componente secundario. Luego, la función asigna la
+     * identificación a una variable que se usa en el componente principal
+     * @param event - El evento que fue despedido.
+     */
     createOpportunity(event){
         this.idReserva = event.detail;
         console.log(this.idReserva);
     }
     
+    /**
+     * Una función que se llama cuando el usuario hace clic en una fila de la tabla. Se utiliza para
+     * seleccionar el vuelo que el usuario quiere comprar.
+     * @param event - El objeto de evento que se disparó.
+     */
     handleAction(event){        
         this.idVuelo = event.detail.row.idVuelo;
         console.log(this.idVuelo);
@@ -275,6 +310,10 @@ export default class NuevaReserva extends LightningElement {
             });
     }
     
+    /**
+     * Crea un Tiquete para el vuelo.
+     * @param event - El evento que fue despedido.
+     */
     agregarPasajeros(event){
         buscarContacto({documento: this.doc, tipo: this.tipo})
         .then((result) => {

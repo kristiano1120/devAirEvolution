@@ -4,14 +4,23 @@ import saveAuxiliares from '@salesforce/apex/Tripulacion.saveAuxiliares';
 
 
 export default class EditarVuelo extends LightningElement {
-    // Flexipage provides recordId and objectApiName
+    /* Una propiedad pública que se pasa desde el componente principal. */
     @api vueloId;
-    //@api objectApiName;
 
     options = [];
     values = [];
+    /* Una variable privada que se utiliza para almacenar los valores seleccionados. */
     _selected = [];
 
+    /**
+     * La función se llama cuando se carga el componente y llama al método de Apex obtenerAxiliares,
+     * que devuelve una lista de objetos con las propiedades valor y etiqueta. Luego, la función asigna
+     * la lista de objetos a una lista de objetos con el valor y la etiqueta de propiedades, que se
+     * asigna a la propiedad de opciones. Luego, la función filtra la lista de objetos a una lista de
+     * objetos con la propiedad seleccionada establecida en verdadero, y luego asigna la lista de
+     * objetos a una lista de objetos con el valor de propiedad, que se asigna a la propiedad de
+     * valores
+     */
     @wire (obtenerAxiliares, {idVuelo : '$vueloId'})
     Tripulantes({error, data}){
         if(data){
@@ -22,10 +31,14 @@ export default class EditarVuelo extends LightningElement {
         }
     }
 
+    /* Guardar los auxiliares seleccionados en la base de datos. */
     handleChange(e) {
         this._selected = e.detail.value;
     }
 
+    /**
+     * Guarda los auxiliares seleccionados en la base de datos.
+     */
     handleSuccess(event) {
         if (this._selected.length == 0) {
             this._selected = this.values;

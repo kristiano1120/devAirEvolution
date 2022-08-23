@@ -1,6 +1,7 @@
 import { LightningElement } from 'lwc';
 
 export default class Calculadora extends LightningElement {
+    /* Declarar las variables que se utilizarán en el código. */
     cadena = '';
     valor1 = '';
     valor2 = '';
@@ -8,6 +9,11 @@ export default class Calculadora extends LightningElement {
     operacion = '';
     temp = '';
 
+    /**
+     * Agrega el número a la variable temporal.
+     * @param event - El objeto de evento es un evento de JavaScript que se envía a un elemento cuando
+     * ocurre un evento. Contiene información útil sobre el evento que sucedió.
+     */
     numberClick(event){
         console.log('número-->'+event.target.dataset.id);
         switch(event.target.dataset.id){
@@ -45,17 +51,26 @@ export default class Calculadora extends LightningElement {
         }
     }
 
+    /**
+     * La función OperationClick() se llama cuando el usuario hace clic en uno de los botones de
+     * operación. Luego, la función verifica el valor del botón en el que se hizo clic y realiza la
+     * operación adecuada
+     * @param event - El objeto de evento.
+     */
     operationClick(event){
         switch(event.target.dataset.id){
             case '+':                
                 this.valor1 = Number(this.temp);
-                this.cadena += ' + ';
+                this.cadena += ' + ';    
                 this.operacion = 'sumar';
                 this.temp = '';
             break;
         }
     }
 
+    /**
+     * La función clear establece todas las variables en una cadena vacía
+     */
     clear(){
         this.cadena = '';
         this.valor1 = '';
@@ -65,6 +80,10 @@ export default class Calculadora extends LightningElement {
         this.resultado = '';
     }
 
+    /**
+     * La función operar() es una declaración de cambio que toma el valor de la variable operación y
+     * realiza la operación que corresponde al valor de la variable operación
+     */
     operate(){
         switch(this.operacion){
             case 'sumar':
