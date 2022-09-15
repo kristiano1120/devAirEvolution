@@ -5,6 +5,7 @@ const actions = [{
     label: 'Asignar', name: 'asignar'
 },];
 
+/* Definición de las columnas de la tabla de datos. */
 const columns = [
     { label: 'Código', fieldName: 'codVuelo' },
     { label: 'Auxiliares Requeridos', fieldName: 'numAuxiliares', type: 'number' },
@@ -46,42 +47,21 @@ export default class AsignarTripulacion extends LightningElement {
         this.copiloto = event.detail.row.copiloto;
     }
 
+   /**
+    * Devuelve el valor de la variable idVuelo.
+    * @returns El idVuelo
+    */
     get vueloId(){
         console.log(this.idVuelo);
         return this.idVuelo;
     }
 
+    /**
+     * La función se llama cuando el usuario hace clic en el botón Cerrar en el modal. Establece la
+     * variable isModalOpen en falso, lo que hace que el modal se cierre
+     */
     closeModal(){
         this.isModalOpen = false;
     }
     
-    
-
-    //@wire(buscarAxiliares)auxiliares({error, data})
-    
-
-
-
-    
-    /* get options() {        
-        return [            
-            { label: 'English', value: 'en' },
-            { label: 'German', value: 'ge' },
-            { label: 'Spanish', value: 'es' },
-            { label: 'French', value: 'fr' },
-            { label: 'Italian', value: 'it' },
-            { label: 'Japanese', value: 'ja' },
-        ];
-    }
-
-    get selected() {
-        return this._selected.length ? this._selected : 'none';
-    }
-
-    handleChange(e) {
-        this._selected = e.detail.value;
-    } */
-
-      
-
 }

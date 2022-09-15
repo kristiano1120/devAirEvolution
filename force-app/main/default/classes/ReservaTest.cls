@@ -1,6 +1,5 @@
 @IsTest
-public class ReservaTest {
-	
+public class ReservaTest {	
     @testSetup
     static void makeData(){
         //Insertar dos contactos

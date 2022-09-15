@@ -5,10 +5,12 @@ import obtenerVuelos from '@salesforce/apex/Reserva.obtenerVuelos';
 import obtenerListaPrecios from '@salesforce/apex/Reserva.obtenerListaPrecios';
 import crearTiquete from '@salesforce/apex/Reserva.crearTiquete';
 
+/* Creación de una matriz de objetos que se utilizarán para crear las acciones de fila. */
 const actions = [{
     label: 'Seleccionar', name: 'seleccionar',
 },];
 
+/* Definición de las columnas de la tabla. */
 const columns = [
     { label: 'Vuelo', fieldName: 'nombreVuelo' },
     { label: 'Aeropuerto de partida', fieldName: 'aeroPartida', type: 'text' },
@@ -23,11 +25,6 @@ const columns = [
 ];
 
 export default class NuevaReserva extends LightningElement {
-   
-
-   
-
-
     //Mostrar ocultar modal
     modalExisteOpen;
     modalNoExisteOpen;
@@ -35,21 +32,42 @@ export default class NuevaReserva extends LightningElement {
     seleccionarLista;
     seleccionarPasajerosModal;
     
+    /**
+     * Cierra el modal y si el usuario no ha hecho reserva o contacto vuelve a buscar
+     */
     closeModalE(){
         this.modalExisteOpen = false;
+        if (this.reserva == null && this.contacto == null) {
+            this.handleBuscar();
+        }else if (this.contacto != null && this.reserva == null) {
+        }    
     }
+    /**
+     * Cierra el modal que dice "No hay vuelo disponible para la fecha seleccionada" y abre el modal
+     * que dice "Selecciona un vuelo" y muestra la lista de vuelos
+     */
     closeModalESeleccionVuelo(){
         this.modalExisteOpen = false;
         this.seleccionarVueloModal = true;
         this.seleccionarLista = true;
     }
+    /**
+     * Esta función cierra el modal que permite al usuario seleccionar los pasajeros que viajarán
+     */
     closeSeleccionarPasajerosModal(){
         this.seleccionarPasajerosModal = false;
     }
+    /**
+     * Esta función cierra la ventana modal que aparece cuando el usuario intenta agregar un nuevo
+     * elemento a la lista, pero el elemento ya existe.
+     */
     closeModalNe(){
         this.modalNoExisteOpen = false;
         
     }
+    /**
+     * Cierra el modal.
+     */
     closeModalSeleccionar(){
         this.seleccionarVueloModal = false;
     } 
@@ -90,6 +108,11 @@ export default class NuevaReserva extends LightningElement {
         this.doc = event.target.value; 
             console.log(this.doc);
         }
+    /**
+     * La función handleChange se llama cuando el usuario selecciona un valor del menú desplegable. El
+     * valor seleccionado se almacena en la variable tipo
+     * @param event - El objeto de evento
+     */
     handleChange(event){
         this.tipo = event.detail.value;
         console.log(this.tipo);
@@ -106,6 +129,11 @@ export default class NuevaReserva extends LightningElement {
         });
         this.dispatchEvent(event);
     }
+    /**
+     * La función showToastContacto() se llama cuando el usuario hace clic en el botón "Crear Contacto"
+     * y muestra un mensaje de brindis con el título "Creacion Contacto" y el mensaje "Contacto creado
+     * exitosamente"
+     */
     showToastContacto() {
         const event = new ShowToastEvent({
             title: 'Creacion Contacto',
@@ -122,20 +150,22 @@ export default class NuevaReserva extends LightningElement {
         .then((result) => {   
                 this.contacto = result.contacto;
                 this.reserva = result.reserva;   
-                console.log(this.contacto);
-                console.log(this.reserva);      
-                console.log(this.idLista1);      
+                console.log('handleBuscar--->'+this.contacto);
+                console.log('handleBuscar--->'+this.reserva);      
+                console.log('handleBuscar--->'+this.idLista1);      
             if (this.contacto == undefined) {
                 this.modalNoExisteOpen = true;
             }else{
                 this.modalExisteOpen = true;                
                 this.tablaContact = true;                
-                if (this.reserva == undefined) {
+                if (this.reserva === undefined) {
                     this.tablaReserva = false;
                     this.seleccionarLista = true; 
                     this.reservaComponent = true;    
-                } else {
-                    this.tablaReserva = true;                    
+                } else if(this.reserva != undefined){
+                    this.tablaReserva = true;
+                    this.seleccionarLista = false;
+                    this.reservaComponent = false;                    
                 }         
             }
             this.error = undefined;       
@@ -154,10 +184,10 @@ export default class NuevaReserva extends LightningElement {
         obtenerListaPrecios({nombre: this.lista})
         .then((result) => {   
             this.idLista = result;
-            console.log('hola-->'+result);    
-            console.log('hola-->'+this.idLista);    
+            console.log('handleChangeLista-->'+result);    
+            console.log('handleChangeLista-->'+this.idLista);    
         }).catch((err) => {
-            console.log('hola-->'+this.err);    
+            console.log('handleChangeLista-->'+this.err);    
         });              
     }
    
@@ -205,12 +235,12 @@ export default class NuevaReserva extends LightningElement {
             return '' 
         }
     }
-    /* get idReserva(){if (this.reserva != null) {
+    get idReserva(){if (this.reserva != null) {
         return this.reserva.Id;            
         } else {
-            return '' 
+            return 'get reserva' 
         }
-    } */
+    }
     //propiedad  id lista de precios 
     get idLista1(){
         if (this.idLista != null) {
@@ -219,10 +249,12 @@ export default class NuevaReserva extends LightningElement {
             return 'hola' 
         }
     }
-   
+    obtenerId(event){
+        console.log(event);
+    }
 
      //metodo para seleccionar vuelos
-     @wire(obtenerVuelos, ({idPrecio: '$idLista'}))vuelos;
+     @wire(obtenerVuelos, ({idPrecio: '$idLista1'}))vuelos;
      columns = columns;
     
 
@@ -236,7 +268,14 @@ export default class NuevaReserva extends LightningElement {
     fechaPartida;
     fechaLlegada;
     idReserva;
+    idContactoN;
 
+    /**
+     * La función se llama cuando el componente secundario activa un evento. El evento contiene la
+     * identificación del registro que se creó en el componente secundario. Luego, la función asigna la
+     * identificación a una variable que se usa en el componente principal
+     * @param event - El evento que fue despedido.
+     */
     createOpportunity(event){
         this.idReserva = event.detail;
         console.log(this.idReserva);
@@ -244,13 +283,19 @@ export default class NuevaReserva extends LightningElement {
     
     /**
      * Una función que se llama cuando el usuario hace clic en una fila de la tabla. Se utiliza para
-     * seleccionar un vuelo.
+     * seleccionar el vuelo que el usuario quiere comprar.
      * @param event - El objeto de evento que se disparó.
      */
     handleAction(event){        
         this.idVuelo = event.detail.row.idVuelo;
+        console.log(this.idVuelo);
         this.nombreVuelo = event.detail.row.nombreVuelo; 
+        console.log(this.nombreVuelo);
         this.aeroPartida = event.detail.row.aeroPartida; 
+        console.log('handleAction-->'+this.aeroPartida);
+        console.log('handleAction-->'+this.idReserva);
+        console.log('handleAction-->'+this.idVuelo);
+        console.log('handleAction-->'+this.idContacto);
         this.aeroLlegada = event.detail.row.aeroLlegada; 
         this.fechaPartida = event.detail.row.fechaPartida; 
         this.fechaLlegada = event.detail.row.fechaLlegada;
@@ -260,43 +305,42 @@ export default class NuevaReserva extends LightningElement {
                 this.seleccionarVueloModal = false;
                 this.seleccionarPasajerosModal = true;
             }).catch((errores) => {
-                console.log(errores);                
+                console.log(errores);
+                
             });
     }
     
+    /**
+     * Crea un Tiquete para el vuelo.
+     * @param event - El evento que fue despedido.
+     */
     agregarPasajeros(event){
         buscarContacto({documento: this.doc, tipo: this.tipo})
         .then((result) => {
             this.error = undefined;
             this.contacto = result.contacto;
             console.log(this.contacto);
-            this.reserva = result.reserva;
+            this.reserva = result.oportunidad;
             if(this.contacto === undefined){
-                this.seleccionarPasajerosModal = false; 
-                this.modalNoExisteOpen = true;
-            } else {
-                this.idContacto = this.contacto.Id;
-                console.log(this.idContacto);
-                console.log(this.contacto);
-                this.nuevoTiquete();
-            } 
+                this.crearCliente = true;
+            } else{
+                this.idContactoN = this.contacto.Id;
+            }
+            //
+        crearTiquete({reserva: this.idReserva, vuelo: this.idVuelo, contacto: this.idContactoN})
+        .then((resultT) => {
+            console.log(resultT);
+        })
+        .catch((errorT) => {
+            console.log(errorT);
+        }) 
         })
         .catch((error) => {
             this.error = error;
             this.contacto = undefined;
             this.reserva = undefined;
-        })            
-    }
-    nuevoTiquete(){
-        console.log(this.idContacto);
-        crearTiquete({reserva: this.idReserva, vuelo: this.idVuelo, contacto: this.idContacto})
-        .then((result) => {
-            console.log(this.idContacto);
-            console.log(result);
         })
-        .catch((error) => {
-            console.log(error);
-        })
+            
     }
 
     

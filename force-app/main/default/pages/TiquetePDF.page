@@ -1,0 +1,44 @@
+<apex:page standardController="OpportunityLineItem" renderAs="pdf">
+ 
+<apex:image value="https://e-volution3-dev-ed--c.documentforce.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0688a00000F0oVW&operationContext=DELIVERY&contentId=05T8a00000tZRxh&page=0&d=/a/8a000000wqCw/21TC.gNjl1FUX3b24V1D8Vz8MBLwc9vxWpoLFB74U3o&oid=00D8a000001NHt6&dpt=null&viewId=" width="200" height="100%" alt="logo air-evolution" />
+ 
+<div style="font-family:sans-serif;"> 
+<h1>Un saludo con altura!</h1>
+</div>
+ 
+<div style="font-family:sans-serif;text-align:left;font-size:12pt;">
+    <p>Hola<b><apex:outputText value=" {!OpportunityLineItem.Pasajero__r.Name}"/></b>,</p> 
+    <p>En E-volution Air deseamos que tengas un feliz viaje.</p>
+    <p>A continucaion, encontraras todos los detalles sobre tu vuelo, i tienes alguna duda no dudes en comunicarte con nosotros.</p>
+ 
+<p>Detalles del Tiquete: </p>
+ 
+<table>
+<tr><th>Nombre del pasajero: </th>
+    <td><apex:outputText value="{!OpportunityLineItem.Pasajero__r.Name}"/></td>
+    </tr>
+<tr><th>Vuelo: </th>
+    <td><apex:outputText value="{!OpportunityLineItem.Product2.Name}"/></td>
+    </tr>
+<tr><th>Asiento: </th>
+    <td><apex:outputText value="{!OpportunityLineItem.Asiento__c}"/></td>
+    </tr>
+ <tr><th>precio: </th>
+    <td><apex:outputText value="{!OpportunityLineItem.UnitPrice}"/></td>
+    </tr>
+ <tr><th>fecha de partida: </th>
+    <td><apex:outputText value="{!OpportunityLineItem.Product2.Fecha_y_hora_de_partida__c}"/></td>
+    </tr>
+ <tr><th>aeroúerto de partida: </th>
+    <td><apex:outputText value="{!OpportunityLineItem.Product2.Aeropuerto_de_partida__r.Name}"/></td>
+    </tr> 
+  <tr><th>aeropuerto de llegada: </th>
+    <td><apex:outputText value="{!OpportunityLineItem.Product2.Aeropuerto_de_Llegada__r.Name}"/></td>
+    </tr> 
+</table>
+    
+
+    
+<p>Feliz vuelo!</p>
+    </div>
+</apex:page>

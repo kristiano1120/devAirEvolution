@@ -1,0 +1,87 @@
+<apex:page standardController="Opportunity" extensions="ListaTiquetesPDF" renderAs="pdf" >
+     <div style="background-color:#FCEFEF">
+        <table style="width:90%">
+            <tr>
+                <td><apex:image value="https://e-volution3-dev-ed--c.documentforce.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0688a00000F0oVW&operationContext=DELIVERY&contentId=05T8a00000tZRxh&page=0&d=/a/8a000000wqCw/21TC.gNjl1FUX3b24V1D8Vz8MBLwc9vxWpoLFB74U3o&oid=00D8a000001NHt6&dpt=null&viewId=" width="200" height="100%" alt="logo air-evolution" /></td>
+                <td style="text-align:right;padding:10px">
+                    <p><h3>Estás listo para volar con nosotros.</h3></p> 
+            		<p><h3>Reserva aprobada</h3></p>
+            		<p>Número de reserva: <b><apex:outputText value=" {!Opportunity.Numero_de_reserva__c}"/></b></p>
+    			</td>            
+			</tr> 
+		</table>
+    </div>
+	
+	<div style="background-color:#FCEFEF;margin-top:20px;padding:10px">
+        <table style="width:90%">
+            <tr> 
+                <th><h2>Pasaje Aéreo</h2></th>           
+				<th style="text-align:right;"><p>Número de reserva: <b><apex:outputText value=" {!Opportunity.Numero_de_reserva__c}"/></b></p></th>           
+            </tr>
+		</table>
+    </div>
+	<div style="background-color:#FCEFEF;padding:10px">
+        <apex:pageBlock>
+            <apex:pageBlockTable value="{!tiquetes}" var="tiquete" cellpadding="10" border="1px">
+                <apex:column value="{! tiquete.Pasajero__r.Name}"/>
+                <apex:column value="{! tiquete.Pasajero__r.Tipo_de_Identificaci_n__c}"/>
+                <apex:column value="{! tiquete.Pasajero__r.Numero_de_Identificacion__c}"/>
+                <apex:column value="{! tiquete.Asiento__c}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        
+    </div>
+
+	<div style="background-color:#FCEFEF;padding:10px">
+        <table style="width:90%">
+            <tr> 
+                <th><h2>Itinerario</h2></th>           
+            </tr>
+		</table>
+        <apex:pageBlock >
+            <apex:pageBlockTable value="{!tiquetes}" var="tiquete" cellpadding="10" border="1px">
+                <apex:column value="{! tiquete.Product2.Name}"/>
+                <apex:column value="{! tiquete.Product2.Aeropuerto_de_Partida__c}"/>
+                <apex:column value="{! tiquete.Product2.Aeropuerto_de_Llegada__c}"/>
+                <apex:column value="{! tiquete.Product2.Fecha_y_hora_de_partida__c}"/>
+                <apex:column value="{! tiquete.Product2.Fecha_y_hora_estimada_de_llegada__c}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        <apex:pageBlock>
+            <apex:pageBlockTable value="{!tiquetes}" var="tiquete" cellpadding="10" border="1px">
+                <apex:column value="{! tiquete.Product2.Name}"/>
+                <apex:column headerValue="Duracion (H)">{! ROUND((tiquete.Product2.Fecha_y_hora_estimada_de_llegada__c - tiquete.Product2.Fecha_y_hora_de_partida__c)*24,2)}</apex:column>
+                <apex:column value="{! tiquete.Equipaje_permitido__c}"/>
+                <apex:column value="{! tiquete.Puerta_de_Embarque__c}"/>
+                <apex:column value="{! tiquete.UnitPrice}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+</div>
+    <div style="background-color:#FCEFEF;margin-top:50px;padding:10px">
+        <apex:pageBlock >
+            <apex:pageBlockSection >
+                <h2>
+                    Terminos y condiciones:
+                </h2>
+                <p style="padding:10px">
+                    Los Términos y Condiciones representan el documento que ayuda a prevenir y resolver los problemas. 
+                    Por ello, son fundamentales en muchos casos para defenderse en caso de abuso. 
+                    Las Condiciones de servicio establecen la forma en que se puede utilizar tu producto, servicio o contenido de forma legalmente vinculante.
+                    Los Términos y Condiciones representan el documento que ayuda a prevenir y resolver los problemas. 
+                    Por ello, son fundamentales en muchos casos para defenderse en caso de abuso. 
+                    Las Condiciones de servicio establecen la forma en que se puede utilizar tu producto, servicio o contenido de forma legalmente vinculante.}
+                    Los Términos y Condiciones representan el documento que ayuda a prevenir y resolver los problemas. 
+                    Por ello, son fundamentales en muchos casos para defenderse en caso de abuso. 
+                    Las Condiciones de servicio establecen la forma en que se puede utilizar tu producto, servicio o contenido de forma legalmente vinculante.
+                    Los Términos y Condiciones representan el documento que ayuda a prevenir y resolver los problemas. 
+                    Por ello, son fundamentales en muchos casos para defenderse en caso de abuso. 
+                    Las Condiciones de servicio establecen la forma en que se puede utilizar tu producto, servicio o contenido de forma legalmente vinculante.
+                </p>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </div>
+    
+
+
+
+</apex:page>

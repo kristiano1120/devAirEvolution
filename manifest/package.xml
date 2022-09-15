@@ -36,5 +36,13 @@
         <members>*</members>
         <name>CustomObject</name>
     </types>
+    <types>
+    <members>MyNamespace__JobRequest__c</members>
+    <name>CustomObject</name>
+    </types>
+    <types>
+        <members>MyProfile</members>
+        <name>Profile</name>
+    </types>
     <version>55.0</version>
 </Package>

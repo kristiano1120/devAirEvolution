@@ -46,7 +46,7 @@ public with sharing class TiqueteTriggerHandler implements TriggerHandler{
         for (opportunityLineItem Tiquete : tiqueteNew){
             idTiquetes.add(Tiquete.Product2Id);
         }
-        map<id , product2> productos = new map<id , product2>([select ID,avion__r.Numero_de_pasajeros_negocios__c,avion__r.Numero_de_pasajeros_Clase_Turista__c 
+        map<id , product2> productos = new map<id , product2>([SELECT ID,avion__r.Numero_de_pasajeros_negocios__c,avion__r.Numero_de_pasajeros_Clase_Turista__c 
                                                                 from Product2 where Id IN :idTiquetes]); 
         AggregateResult[] groupedResults = [SELECT Count(Id),Product2Id FROM OpportunityLineItem where Product2Id IN :idTiquetes GROUP BY Product2Id  ];
         List<Product2> vuelos = new List<Product2>();

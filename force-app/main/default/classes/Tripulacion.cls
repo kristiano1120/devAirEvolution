@@ -48,6 +48,20 @@ public with sharing class Tripulacion {
             throw new AuraHandledException(e.getMessage());
         }
     }
+    public class opcion{
+        @AuraEnabled
+        public string label;
+        @AuraEnabled
+        public string value;
+        @AuraEnabled
+        public Boolean selected;
+
+        public opcion(String label, String value, Boolean selected){
+            this.label = label;
+            this.value = value;
+            this.selected = selected;
+        }
+    }
 
     @AuraEnabled
     public static void saveAuxiliares(List<string> auxiliares, string idvuelo){
@@ -119,23 +133,7 @@ public with sharing class Tripulacion {
         }   
     }
 
-    public class opcion{
-        @AuraEnabled
-        public string label;
-        @AuraEnabled
-        public string value;
-        @AuraEnabled
-        public Boolean selected;
-
-        public opcion(String label, String value, Boolean selected){
-            this.label = label;
-            this.value = value;
-            this.selected = selected;
-        }
-        
-        
-            
-    }
+    
 
 
 

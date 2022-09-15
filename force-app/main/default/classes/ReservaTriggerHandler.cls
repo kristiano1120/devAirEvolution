@@ -40,34 +40,41 @@ public with sharing class ReservaTriggerHandler implements TriggerHandler {
 
     //Si una reserva es pagada, actualizar fecha de pago y enviar correo al pasajero con la inf de su reserva.
     public static void actualizarFechaSiPagado(List<Opportunity> reserva){
+        Set<Id> idContactos = new Set<Id>();
+        for (Opportunity op : reserva) {
+            idContactos.add(op.Titular_de_la_reserva__c);
+        }
+        Map<Id, Contact> titulares = new Map<Id, Contact>([SELECT id, Name, Email FROM Contact WHERE Id =: idContactos]); 
+
         for (Opportunity opp : reserva){
             if (opp.StageName == 'Pagado') {
                 //Actualizar la fecha de pago
-                opp.Fecha_de_pago__c = Date.newInstance(Date.today().year(), date.today().month(), Date.today().day());
-
-                //Enviar correo de reserva                
+                opp.Fecha_de_pago__c = Date.today();
+                
+                /* //Enviar correo de reserva                
                 Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
                 //Direccion de envio
-                String[] toAddresses = new String[] { 'kristiano1120@hotmail.com' };                
+                String[] toAddresses = new String[] {titulares.get(opp.Titular_de_la_reserva__c).Email};                
                 mail.setToAddresses(toAddresses);
                 // Direccion de respuesta 
-                mail.setReplyTo('support@acme.com');
+                mail.setReplyTo('kristiano1120@hotmail.com');
                 // Nombre para mostrar
                 mail.setSenderDisplayName('Salesforce Support');
                 //Asunto
                 mail.setSubject('CONFIRMACION DE RESERVA');
                 //Cuerpo del mensaje
-                mail.setPlainTextBody('Hola '+ opp.Titular_de_la_reserva__c +' para nosotros es un placer informale que su reserva número ' 
-                                    + opp.Numero_de_reserva__c + ' ha sido creada exitosamente');
+                String[] name = new String[] {titulares.get(opp.Titular_de_la_reserva__c).Name};                
+                mail.setPlainTextBody('Hola '+ name +' para nosotros es un placer informale que su reserva número ' 
+                + opp.Numero_de_reserva__c + ' ha sido pagada exitosamente por un valor de '+ opp.Valor_total__c);
                 //Firma del mensaje
                 mail.setUseSignature(false);
                 //Mensaje
                 Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
                 Messaging.SendEmailResult[] results = Messaging.sendEmail( new Messaging.SingleEmailMessage[] { mail });
                 //Llamado a l metodo de prueba
-                inspectResults(results);
+                inspectResults(results); */
             }            
-        }
+        }       
     }
     private static Boolean inspectResults(Messaging.SendEmailResult[] results) {
         Boolean sendResult = true;

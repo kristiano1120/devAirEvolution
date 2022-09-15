@@ -899,9 +899,9 @@
                 <label>Río Grande</label>
             </value>
             <value>
-                <fullName>Rionegro, Medellín</fullName>
+                <fullName>Medellín</fullName>
                 <default>false</default>
-                <label>Rionegro, Medellín</label>
+                <label>Medellín</label>
             </value>
             <value>
                 <fullName>Rodrigues</fullName>
@@ -1466,7 +1466,7 @@
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Colombia</controllingFieldValue>
-            <valueName>Rionegro, Medellín</valueName>
+            <valueName>Medellín</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Corea del Sur</controllingFieldValue>
