@@ -51,7 +51,11 @@ public with sharing class ReservaTriggerHandler implements TriggerHandler {
                 //Actualizar la fecha de pago
                 opp.Fecha_de_pago__c = Date.today();
                 
+<<<<<<< HEAD
                 /* //Enviar correo de reserva                
+=======
+                //Enviar correo de reserva                
+>>>>>>> 1bac4c9bf2fbecc69e2ae9f4faf3ca6caf1b3203
                 Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
                 //Direccion de envio
                 String[] toAddresses = new String[] {titulares.get(opp.Titular_de_la_reserva__c).Email};                
