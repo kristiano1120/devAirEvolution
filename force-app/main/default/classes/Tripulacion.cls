@@ -29,8 +29,8 @@ public with sharing class Tripulacion {
                                         WHERE RecordType.name = 'Auxiliar de vuelo'
                                         LIMIT 20];
             List<Auxiliares_x_Vuelo__c> tripulantes = [SELECT Id, Nombre_de_Tripulante__c, Nombre_de_Tripulante__r.name
-                                                          FROM Auxiliares_x_Vuelo__c
-                                                        WHERE Vuelo__c =: idVuelo];
+                                                    FROM Auxiliares_x_Vuelo__c
+                                                    WHERE Vuelo__c =: idVuelo];
             
             list<opcion> opciones = new list<opcion>();
             for(Contact c : auxiliares){
